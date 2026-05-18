@@ -4,36 +4,38 @@ type: software
 title: "Machine Learning Mapping of HIV-TB Co-infection across Ghana's 261 Districts"
 abstract: >
  Reproducible pipeline for spatial distribution, determinants, and ML-based risk
- prediction of HIV-TB co-infection across Ghana's 261 administrative districts.
+ prediction of HIV-TB co-infection across Ghana's 261 administrative health districts.
  Methods: Univariate and bivariate Moran's I, LISA, Gi*, GWR, LightGBM ensemble,
  SHAP interpretability. LightGBM LODO-CV AUC=0.998; GWR R2=0.916;
- Moran's I=0.468 (univariate), 0.521 (bivariate).
+ Moran's I=0.810 (univariate), 0.449 (bivariate). Dataset fully deduplicated
+ with 261 unique districts (Guan added 2026-05).
 authors:
- - family-names: Ghanem
- given-names: Valentine Golden
- orcid: "https://orcid.org/0009-0002-8332-0220"
- affiliation: "Ghana COCOBOD Cocoa Clinic, Accra, Ghana"
- email: valentineghanem@gmail.com
-version: "1.0.0"
-date-released: "2026-04-30"
+  - family-names: Ghanem
+    given-names: Valentine Golden
+    orcid: "https://orcid.org/0009-0002-8332-0220"
+    affiliation: "Ghana COCOBOD Cocoa Clinic, Accra, Ghana"
+    email: valentineghanem@gmail.com
+version: "1.1.0"
+date-released: "2026-05-18"
 license: MIT
-repository-code: "https://github.com/[author]/ghana-hiv-tb-260district-ml"
+repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts"
 keywords:
- - HIV-TB co-infection
- - spatial epidemiology
- - machine learning
- - Ghana
- - 261 districts
- - LightGBM
- - SHAP
- - GWR
- - LISA
- - STROBE
+  - HIV-TB co-infection
+  - spatial epidemiology
+  - machine learning
+  - Ghana
+  - 261 districts
+  - LightGBM
+  - SHAP
+  - GWR
+  - LISA
+  - STROBE
+  - deduplicated dataset
 references:
- - type: article
- title: "Spatial distribution, determinants, and machine-learning-based risk prediction of HIV-TB co-infection across Ghana's 261 districts"
- authors:
- - family-names: Ghanem
- given-names: Valentine Golden
- year: 2026
- notes: "Target journals: IJID / BMC Infectious Diseases. Manuscript in preparation."
+  - type: article
+    title: "Spatial distribution, determinants, and machine-learning-based risk prediction of HIV-TB co-infection across Ghana's 261 districts"
+    authors:
+      - family-names: Ghanem
+        given-names: Valentine Golden
+    year: 2026
+    notes: "Target journals: IJID / BMC Infectious Diseases. Manuscript in preparation."
