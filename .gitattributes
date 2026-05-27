@@ -32,3 +32,7 @@ poster/** linguist-generated=true
 *.xls binary
 *.pkl binary
 *.rds binary
+# Dashboard HTML — generated build outputs (inlined Plotly.js ~3-9 MB)
+dashboard/**              linguist-generated=true
+outputs/**/*.html         linguist-generated=true
+**/*Dashboard*.html       linguist-generated=true
