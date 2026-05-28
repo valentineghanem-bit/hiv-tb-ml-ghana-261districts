@@ -5,25 +5,17 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HIV–TB ML · Ghana 261 Districts — Conference Poster</title>
 <style>
-/* ── Print (A0 portrait) ────────────────────────── */
 @page{size:A0 portrait;margin:0}
-@media print{
-  body{width:841mm;height:1189mm;overflow:hidden}
-  .screen-hint{display:none!important}
-}
-/* ── Screen ──────────────────────────────────────── */
+@media print{body{width:841mm;height:1189mm;overflow:hidden}.screen-hint{display:none!important}}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',Arial,sans-serif;background:#e8ecf0;color:#1c2833;font-size:13px}
 .poster{width:841mm;min-height:1189mm;margin:0 auto;background:#fff;position:relative}
-@media screen{.poster{max-width:100%;width:100%;min-height:auto}}
-/* ── Header ───────────────────────────────────────── */
+@media screen{.poster{max-width:100%;width:100%;min-height:auto;box-shadow:0 4px 20px rgba(0,0,0,.15)}}
 .ph{background:linear-gradient(135deg,#6c3483 0%,#2e86c1 100%);color:#fff;padding:28px 36px 22px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:start}
 .ph h1{font-size:1.9em;line-height:1.25;margin-bottom:8px}
 .ph .meta{font-size:.88em;opacity:.9;line-height:1.7}
 .ph .meta a{color:#aed6f1}
-/* ── KPI strip ────────────────────────────────────── */
 .kpi-strip{background:linear-gradient(90deg,rgba(108,52,131,.08) 0%,rgba(46,134,193,.06) 100%);padding:14px 36px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-/* ── Body ─────────────────────────────────────────── */
 .body{padding:20px 28px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start}
 .col{display:flex;flex-direction:column;gap:14px}
 .section{background:#fafbfc;border-radius:8px;padding:14px 14px 10px;border-left:4px solid #6c3483}
@@ -32,16 +24,13 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#e8ecf0;color:#1c2833;fo
 table{width:100%;border-collapse:collapse;font-size:.76em}
 th{background:#6c3483;color:#fff;padding:5px 7px;text-align:left;font-size:.75em}
 td{padding:4px 7px;border-bottom:1px solid #eef;vertical-align:top}
-/* ── Footer ───────────────────────────────────────── */
 .footer{background:linear-gradient(135deg,#6c3483,#2e86c1);color:#fff;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .footer p{font-size:.76em;opacity:.9;line-height:1.55}
 .footer a{color:#aed6f1}
 .screen-hint{position:fixed;bottom:12px;right:12px;background:rgba(0,0,0,.7);color:#fff;padding:7px 12px;border-radius:6px;font-size:.75em;z-index:100}
-@media screen{.poster{box-shadow:0 4px 20px rgba(0,0,0,.15)}}
 </style>
 </head>
 <body>
-
 <div class="poster">
 
 <!-- HEADER -->
@@ -86,25 +75,24 @@ td{padding:4px 7px;border-bottom:1px solid #eef;vertical-align:top}
   <div style="font-size:0.66em;color:#888">National 2022</div>
 </div></div>
 
-<!-- BODY (3 columns) -->
+<!-- BODY -->
 <div class="body">
 
 <!-- COL 1 -->
 <div class="col">
 <div class="section">
-  <h2>1. Background & Abstract</h2>
+  <h2>1. Background &amp; Abstract</h2>
   <p>Machine-learning spatial analysis of HIV–TB co-infection burden across Ghana's 261 districts. Bivariate LISA reveals significant co-clustering of HIV and TB prevalence (bivariate Moran's I=0.71). XGBoost with SHAP identifies prison population density, urban overcrowding, and low ART coverage as leading determinants. 22 districts face dual-burden concentration, particularly in Greater Accra and Ashanti.</p>
 </div>
 <div class="section">
   <h2>2. Data Sources</h2>
-  <p><strong>Primary:</strong> 2022 Ghana Demographic and Health Survey (GSS · GHS · ICF International) — regional direct estimates.</p>
-  <p style="margin-top:6px"><strong>Covariate:</strong> 2021 Ghana Population and Housing Census — district-level predictors (n=261 districts).</p>
+  <p><strong>Primary:</strong> 2022 Ghana Demographic and Health Survey (GSS · GHS · ICF International).</p>
+  <p style="margin-top:6px"><strong>Covariate:</strong> 2021 Ghana Population and Housing Census — 261 district-level predictors.</p>
   <p style="margin-top:6px"><strong>Spatial:</strong> Ghana 261-district boundary GeoJSON (Ghana Statistical Service, 2021).</p>
-  <p style="margin-top:6px"><em>All data are publicly released aggregate statistics. No personal identifiers accessed.</em></p>
 </div>
 <div class="section">
   <h2>3. Ethical Statement</h2>
-  <p>This study analyses publicly released aggregate statistics from the 2022 Ghana DHS and the 2021 Population and Housing Census. No individual participant data were accessed. Ethical review was not required. DHS data accessed under the standard DHS Programme Data Use Agreement.</p>
+  <p>All data are publicly available, de-identified secondary datasets. No individual-level identifiers were accessed. Analysis used ecological district-level aggregates only.</p>
 </div>
 </div>
 
@@ -136,41 +124,41 @@ td{padding:4px 7px;border-bottom:1px solid #eef;vertical-align:top}
 <div class="section">
   <h2>6. SHAP Feature Importance</h2>
   <div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">Prison density</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">Prison density</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:28%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">28%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">28%</span>
 </div><div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">Urban overcrowding</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">Urban overcrowding</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:23%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">23%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">23%</span>
 </div><div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">ART coverage</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">ART coverage</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:19%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">19%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">19%</span>
 </div><div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">HIV prevalence</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">HIV prevalence</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:15%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">15%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">15%</span>
 </div><div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">Malnutrition</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">Malnutrition</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:9%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">9%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">9%</span>
 </div><div style="margin-bottom:6px;display:flex;align-items:center;gap:8px">
-<span style="width:140px;font-size:0.78em;text-align:right;flex-shrink:0">TB notification</span>
-<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1;position:relative">
+<span style="width:130px;font-size:0.78em;text-align:right;flex-shrink:0">TB notification</span>
+<div style="background:#e8eaf6;border-radius:3px;height:14px;flex:1">
 <div style="background:linear-gradient(90deg,#6c3483,#2e86c1);width:6%;height:14px;border-radius:3px"></div>
 </div>
-<span style="font-size:0.75em;font-weight:700;width:30px">6%</span>
+<span style="font-size:0.75em;font-weight:700;width:28px">6%</span>
 </div>
 </div>
 </div>
@@ -178,20 +166,40 @@ td{padding:4px 7px;border-bottom:1px solid #eef;vertical-align:top}
 <!-- COL 3 -->
 <div class="col">
 <div class="section">
+  <h2>0. Spatial Distribution Maps</h2>
+  <div style="display:flex;gap:6px;align-items:flex-start">
+<div style="flex:1;text-align:center">
+  <div style="font-size:0.7em;font-weight:700;color:#6c3483;margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em">Outcome Map</div>
+  <svg viewBox="0 0 400 450" width="100%" style="max-height:160px">
+    <path d="M 5,432 L 85,450 L 157,443 L 274,394 L 337,390 L 396,362 L 396,222 L 373,82 L 310,12 L 220,0 L 85,12 L 40,117 L 5,222 L 0,327 L 5,397 Z" fill="#ecf0f1" stroke="#95a5a6" stroke-width="1.5"/>
+    <circle cx="298" cy="391" r="16" fill="rgba(108,52,131,1.00)" stroke="white" stroke-width="1.5"/><text x="298" y="394.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">GA</text><circle cx="155" cy="310" r="12" fill="rgba(108,52,131,0.74)" stroke="white" stroke-width="1.5"/><text x="155" y="313.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Asha</text><circle cx="245" cy="331" r="12" fill="rgba(108,52,131,0.70)" stroke="white" stroke-width="1.5"/><text x="245" y="334.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">East</text><circle cx="336" cy="292" r="11" fill="rgba(108,52,131,0.64)" stroke="white" stroke-width="1.5"/><text x="336" y="295.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Volt</text><circle cx="205" cy="386" r="10" fill="rgba(108,52,131,0.55)" stroke="white" stroke-width="1.5"/><text x="205" y="389.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Cent</text><circle cx="106" cy="374" r="9" fill="rgba(108,52,131,0.47)" stroke="white" stroke-width="1.5"/><text x="106" y="377.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">West</text><circle cx="66" cy="271" r="8" fill="rgba(108,52,131,0.41)" stroke="white" stroke-width="1.5"/><text x="66" y="274.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Bono</text><circle cx="204" cy="113" r="7" fill="rgba(108,52,131,0.35)" stroke="white" stroke-width="1.5"/><text x="204" y="116.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">Nort</text><circle cx="75" cy="46" r="6" fill="rgba(108,52,131,0.27)" stroke="white" stroke-width="1.5"/><text x="75" y="49.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">UW</text><circle cx="250" cy="28" r="6" fill="rgba(108,52,131,0.25)" stroke="white" stroke-width="1.5"/><text x="250" y="31.5" text-anchor="middle" font-size="8" fill="white" font-weight="bold">UE</text>
+  </svg>
+  <div style="font-size:0.62em;color:#666;margin-top:1px">Bubble = magnitude</div>
+</div>
+<div style="flex:1;text-align:center">
+  <div style="font-size:0.7em;font-weight:700;color:#6c3483;margin-bottom:2px;text-transform:uppercase;letter-spacing:.03em">LISA Clusters</div>
+  <svg viewBox="0 0 400 450" width="100%" style="max-height:160px">
+    <path d="M 5,432 L 85,450 L 157,443 L 274,394 L 337,390 L 396,362 L 396,222 L 373,82 L 310,12 L 220,0 L 85,12 L 40,117 L 5,222 L 0,327 L 5,397 Z" fill="#ecf0f1" stroke="#95a5a6" stroke-width="1.5"/>
+    <circle cx="298" cy="391" r="13" fill="#c0392b" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="298" y="394.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">HH</text><circle cx="155" cy="310" r="13" fill="#c0392b" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="155" y="313.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">HH</text><circle cx="245" cy="331" r="13" fill="#c0392b" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="245" y="334.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">HH</text><circle cx="336" cy="292" r="13" fill="#e67e22" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="336" y="295.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">HL</text><circle cx="205" cy="386" r="13" fill="#bdc3c7" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="205" y="389.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">NS</text><circle cx="106" cy="374" r="13" fill="#bdc3c7" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="106" y="377.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">NS</text><circle cx="66" cy="271" r="13" fill="#bdc3c7" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="66" y="274.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">NS</text><circle cx="204" cy="113" r="13" fill="#2980b9" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="204" y="116.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">LL</text><circle cx="75" cy="46" r="13" fill="#2980b9" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="75" y="49.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">LL</text><circle cx="250" cy="28" r="13" fill="#2980b9" stroke="white" stroke-width="1.5" opacity="0.9"/><text x="250" y="31.5" text-anchor="middle" font-size="7.5" fill="white" font-weight="bold">LL</text>
+  </svg>
+  <div style="font-size:0.62em;line-height:1.5;margin-top:1px">
+    <span style="color:#c0392b">■</span>HH &nbsp;<span style="color:#2980b9">■</span>LL &nbsp;<span style="color:#e67e22">■</span>HL &nbsp;<span style="color:#82c0e8">■</span>LH &nbsp;<span style="color:#bdc3c7">■</span>NS
+  </div>
+</div>
+</div>
+</div>
+<div class="section">
   <h2>7. Key Findings</h2>
   <table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Bivariate Moran's I (HIV×TB)</td><td><strong>0.71 (p=0.002)</strong></td></tr><tr><td>HIV prevalence range</td><td><strong>0.3 – 4.8%</strong></td></tr><tr><td>TB notification rate range</td><td><strong>12 – 184/100k</strong></td></tr><tr><td>Dual-burden districts</td><td><strong>22</strong></td></tr><tr><td>Top predictor (SHAP)</td><td><strong>Prison population density</strong></td></tr><tr><td>ART coverage range</td><td><strong>38 – 94%</strong></td></tr><tr><td>XGBoost LOROCV AUC</td><td><strong>0.88 ± 0.03</strong></td></tr><tr><td>SEM residual Moran's I</td><td><strong>0.03 (p=0.41)</strong></td></tr></tbody></table>
 </div>
 <div class="section">
-  <h2>8. Discussion & Conclusion</h2>
-  <p>Results confirm significant spatial heterogeneity in the primary outcome across Ghana's 261 districts. The northern and savannah regions consistently emerge as high-burden areas, underserved by existing interventions. SHAP analysis reveals that socioeconomic and infrastructure determinants outperform purely demographic predictors, pointing to structural drivers amenable to policy intervention.</p>
-  <p style="margin-top:6px">Findings support geographically targeted resource allocation at the district level. The BYM2 / XGBoost pipeline is recommended for national health programme planning when district-level survey data are unavailable.</p>
+  <h2>8. Discussion &amp; Conclusion</h2>
+  <p>This analysis demonstrates strong spatial patterning in hiv–tb ml across Ghana's 261 districts. The identified High-High clusters require targeted, district-specific public health interventions. ML-derived SHAP values enable prioritisation of modifiable determinants.</p>
 </div>
 <div class="section">
   <h2>9. Citation</h2>
   <p><strong>APA:</strong> Ghanem, V. G. (2026). <em>HIV–TB Co-Infection ML Determinants — Ghana 261 Districts.</em> GitHub. <a href="https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts" style="color:#6c3483">https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts</a></p>
-  <p style="margin-top:6px"><strong>ORCID:</strong> <a href="https://orcid.org/0009-0002-8332-0220" style="color:#6c3483">0009-0002-8332-0220</a></p>
-  <p style="margin-top:6px"><strong>Reporting standard:</strong> STROBE · RECORD-Spatial · TRIPOD+AI</p>
-  <p style="margin-top:8px"><strong>Acknowledgements:</strong> Ghana Statistical Service · Ghana Health Service · ICF International (DHS) · R-INLA Team · scikit-learn · XGBoost · SHAP · spdep · esda · libpysal</p>
+  <p style="margin-top:6px">ORCID: <a href="https://orcid.org/0009-0002-8332-0220" style="color:#6c3483">0009-0002-8332-0220</a> | STROBE · RECORD-Spatial · TRIPOD+AI</p>
 </div>
 </div>
 
@@ -200,22 +208,19 @@ td{padding:4px 7px;border-bottom:1px solid #eef;vertical-align:top}
 <!-- FOOTER -->
 <div class="footer">
 <div>
-  <p><strong>HIV–TB ML · Ghana 261 Districts</strong> | 2026 | Manuscript in preparation</p>
-  <p>Author: Valentine Golden Ghanem | Ghana COCOBOD Cocoa Clinic, Accra, Ghana</p>
-  <p>ORCID: <a href="https://orcid.org/0009-0002-8332-0220">0009-0002-8332-0220</a> | GitHub: <a href="https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts">https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts</a></p>
-  <p>Reporting: STROBE · RECORD-Spatial · TRIPOD+AI | Print: A0 portrait (841 × 1189 mm)</p>
+  <p><strong>hiv-tb-ml-ghana-261districts</strong> | Valentine Golden Ghanem | Ghana COCOBOD Cocoa Clinic</p>
+  <p>ORCID: 0009-0002-8332-0220 | <a href="https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts">https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts</a></p>
+  <p>STROBE · RECORD-Spatial · TRIPOD+AI | Print: A0 portrait (841 × 1189 mm)</p>
 </div>
 <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
   <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https%3A%2F%2Fgithub.com%2Fvalentineghanem-bit%2Fhiv-tb-ml-ghana-261districts"
-       alt="QR" style="width:90px;height:90px;border:3px solid white;border-radius:4px"
+       alt="QR" style="width:90px;height:90px;border:3px solid white;border-radius:5px"
        onerror="this.style.display='none'">
-  <span style="font-size:0.65em;opacity:0.8">Repository</span>
+  <span style="font-size:0.65em;opacity:0.8">Scan for repo</span>
 </div>
 </div>
 
 </div><!-- /poster -->
-
 <div class="screen-hint">Print → A0 portrait | or use browser PDF export</div>
-
 </body>
 </html>
