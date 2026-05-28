@@ -20,8 +20,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--te
 .card{background:var(--card);border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .card h3{color:var(--primary);font-size:.98em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--bg)}
 .full{grid-column:1/-1}
-.chart-box{width:100%;overflow-x:auto;min-height:20px}
-.chart-box svg{display:block}
+.chart-box{width:100%;overflow:hidden;min-height:20px}
+.chart-box svg{display:block;width:100%}
 table{width:100%;border-collapse:collapse;font-size:.82em}
 th{background:var(--primary);color:#fff;padding:7px 9px;text-align:left;font-size:.82em}
 td{padding:6px 9px;border-bottom:1px solid #eef;vertical-align:top}
@@ -29,6 +29,7 @@ tr:hover td{background:#f5f9ff}
 .footer{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:16px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:8px}
 .footer-info p{font-size:.78em;opacity:.85;line-height:1.6}
 .tooltip{position:fixed;background:rgba(30,60,100,.94);color:#fff;padding:8px 12px;border-radius:6px;font-size:.8em;pointer-events:none;z-index:999;display:none;max-width:240px;line-height:1.45;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.map-label{font-size:.78em;color:#666;text-align:center;margin-top:4px}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}.header{padding:14px 18px}.grid{padding:0 14px 18px}.kpi-row{padding:12px 14px}}
 </style>
 </head>
@@ -82,7 +83,9 @@ tr:hover td{background:#f5f9ff}
   </div></div>
 
 <div class="grid">
-  <div class="card full"><h3>📊 Regional Distribution — HIV/STI Prevalence (%)</h3><div class="chart-box" id="regionChart"></div></div>
+  <div class="card"><h3>🗺️ Outcome Choropleth — HIV Prevalence (%)</h3><div class="chart-box" id="choroplethPanel"></div><p class="map-label">Bubble size &amp; opacity = outcome magnitude | Hover for details</p></div>
+  <div class="card"><h3>🔴 LISA Spatial Cluster Map</h3><div class="chart-box" id="lisaPanel"></div><p class="map-label">HH=red · LL=blue · HL=orange · LH=light-blue · NS=grey</p></div>
+  <div class="card full"><h3>📊 Regional Distribution — HIV Prevalence (%)</h3><div class="chart-box" id="regionChart"></div></div>
   <div class="card"><h3>🤖 ML Model Performance (AUC)</h3><div class="chart-box" id="mlChart"></div></div>
   <div class="card"><h3>📈 SHAP Feature Importance</h3><div class="chart-box" id="shapChart"></div></div>
   <div class="card"><h3>🗓️ Study / Data Timeline</h3><div class="chart-box" id="timelineChart"></div></div>
@@ -108,20 +111,78 @@ tr:hover td{background:#f5f9ff}
 <div class="tooltip" id="tip"></div>
 
 <script>
-const REGION = [{"name":"Greater Accra","anc":4.1,"tfr":142},{"name":"Ashanti","anc":2.8,"tfr":98},{"name":"Eastern","anc":2.6,"tfr":87},{"name":"Volta","anc":2.3,"tfr":76},{"name":"Central","anc":1.9,"tfr":65},{"name":"Western","anc":1.5,"tfr":54},{"name":"Bono","anc":1.2,"tfr":44},{"name":"Northern","anc":0.9,"tfr":36},{"name":"Upper West","anc":0.5,"tfr":24},{"name":"Upper East","anc":0.4,"tfr":18}];
-const ML = [{"name":"XGBoost","auc":0.88,"acc":0.81},{"name":"Random Forest","auc":0.85,"acc":0.78},{"name":"SEM","auc":0.76,"acc":0.7}];
-const TIMELINE = [{"year":2015,"studies":1},{"year":2017,"studies":2},{"year":2019,"studies":3},{"year":2021,"studies":4},{"year":2023,"studies":5},{"year":2025,"studies":6}];
-const SHAP = [{"feat":"Prison density","imp":0.28},{"feat":"Urban overcrowding","imp":0.23},{"feat":"ART coverage","imp":0.19},{"feat":"HIV prevalence","imp":0.15},{"feat":"Malnutrition","imp":0.09},{"feat":"TB notification","imp":0.06}];
-const METHODS = [["Bivariate LISA","esda","HIV × TB co-clustering"],["Global Moran's I","spdep / esda","Separate HIV and TB autocorrelation"],["XGBoost + SHAP","xgboost / shap","Co-infection determinants"],["Spatial SEM","spatialreg (R)","Error-model spatial regression"],["LOROCV (16-fold)","Custom","Honest cross-validation"],["Bayesian Network","pgmpy","Causal pathway analysis"]];
-const FINDINGS = [["Bivariate Moran's I (HIV×TB)","0.71 (p=0.002)"],["HIV prevalence range","0.3 – 4.8%"],["TB notification rate range","12 – 184/100k"],["Dual-burden districts","22"],["Top predictor (SHAP)","Prison population density"],["ART coverage range","38 – 94%"],["XGBoost LOROCV AUC","0.88 ± 0.03"],["SEM residual Moran's I","0.03 (p=0.41)"]];
-const PRIMARY_LABEL = "HIV/STI Prevalence (%)";
-const SECOND_LABEL = "TB Rate/100k";
-const TIP = document.getElementById('tip');
+const REGION=[{"name":"Greater Accra","anc":4.1,"tfr":142,"lisa":"HH"},{"name":"Ashanti","anc":2.8,"tfr":98,"lisa":"HH"},{"name":"Eastern","anc":2.6,"tfr":87,"lisa":"HH"},{"name":"Volta","anc":2.3,"tfr":76,"lisa":"HL"},{"name":"Central","anc":1.9,"tfr":65,"lisa":"NS"},{"name":"Western","anc":1.5,"tfr":54,"lisa":"NS"},{"name":"Bono","anc":1.2,"tfr":44,"lisa":"NS"},{"name":"Northern","anc":0.9,"tfr":36,"lisa":"LL"},{"name":"Upper West","anc":0.5,"tfr":24,"lisa":"LL"},{"name":"Upper East","anc":0.4,"tfr":18,"lisa":"LL"}];
+const ML=[{"name":"XGBoost","auc":0.88,"acc":0.81},{"name":"Random Forest","auc":0.85,"acc":0.78},{"name":"SEM","auc":0.76,"acc":0.7}];
+const TIMELINE=[{"year":2015,"studies":1},{"year":2017,"studies":2},{"year":2019,"studies":3},{"year":2021,"studies":4},{"year":2023,"studies":5},{"year":2025,"studies":6}];
+const SHAP=[{"feat":"Prison density","imp":0.28},{"feat":"Urban overcrowding","imp":0.23},{"feat":"ART coverage","imp":0.19},{"feat":"HIV prevalence","imp":0.15},{"feat":"Malnutrition","imp":0.09},{"feat":"TB notification","imp":0.06}];
+const METHODS=[["Bivariate LISA","esda","HIV × TB co-clustering"],["Global Moran's I","spdep / esda","Separate HIV and TB autocorrelation"],["XGBoost + SHAP","xgboost / shap","Co-infection determinants"],["Spatial SEM","spatialreg (R)","Error-model spatial regression"],["LOROCV (16-fold)","Custom","Honest cross-validation"],["Bayesian Network","pgmpy","Causal pathway analysis"]];
+const FINDINGS=[["Bivariate Moran's I (HIV×TB)","0.71 (p=0.002)"],["HIV prevalence range","0.3 – 4.8%"],["TB notification rate range","12 – 184/100k"],["Dual-burden districts","22"],["Top predictor (SHAP)","Prison population density"],["ART coverage range","38 – 94%"],["XGBoost LOROCV AUC","0.88 ± 0.03"],["SEM residual Moran's I","0.03 (p=0.41)"]];
+const PRIMARY_LABEL="HIV Prevalence (%)";
+const SECOND_LABEL="TB Rate/100k";
+const PRIMARY_RGB=[108,52,131];
+const TIP=document.getElementById('tip');
+
+const REGION_CENTROIDS={
+  'Greater Accra':{x:298,y:391},'Central':{x:205,y:386},'Western':{x:106,y:374},
+  'Western North':{x:82,y:333},'Eastern':{x:245,y:331},'Ashanti':{x:155,y:310},
+  'Bono':{x:66,y:271},'Bono East':{x:138,y:248},'Ahafo':{x:70,y:287},
+  'Oti':{x:273,y:229},'Volta':{x:336,y:292},'North East':{x:245,y:45},
+  'Savannah':{x:155,y:119},'Northern':{x:204,y:113},'Upper East':{x:250,y:28},
+  'Upper West':{x:75,y:46},'Brong-Ahafo':{x:102,y:259}
+};
+const GHANA_PATH='M 5,432 L 85,450 L 157,443 L 274,394 L 337,390 L 396,362 L 396,222 L 373,82 L 310,12 L 220,0 L 85,12 L 40,117 L 5,222 L 0,327 L 5,397 Z';
+const LISA_COLORS={HH:'#c0392b',LL:'#2980b9',HL:'#e67e22',LH:'#82c0e8',NS:'#bdc3c7'};
+const LISA_LABELS={HH:'High-High Cluster',LL:'Low-Low Cluster',HL:'High-Low Outlier',LH:'Low-High Outlier',NS:'Not Significant'};
+const ABBRS={'Greater Accra':'GA','Upper East':'UE','Upper West':'UW','Bono East':'BE','Western North':'WN','North East':'NE','Brong-Ahafo':'BA'};
+function ra(n){return ABBRS[n]||n.substring(0,4);}
 
 function tip(e,h){TIP.innerHTML=h;TIP.style.display='block';TIP.style.left=Math.min(e.clientX+14,window.innerWidth-260)+'px';TIP.style.top=Math.max(e.clientY-10,4)+'px'}
 function hideTip(){TIP.style.display='none'}
-
 function svgEl(tag,attrs,parent){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const[k,v]of Object.entries(attrs||{}))e.setAttribute(k,v);if(parent)parent.appendChild(e);return e}
+
+function renderChoropleth(){
+  const c=document.getElementById('choroplethPanel');c.innerHTML='';
+  const vals=REGION.map(d=>typeof d.anc==='number'?d.anc:0);
+  const minV=Math.min(...vals),maxV=Math.max(...vals);
+  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 400 450',style:'max-height:270px;display:block'});
+  svgEl('path',{d:GHANA_PATH,fill:'#ecf0f1',stroke:'#95a5a6','stroke-width':'1.5'},svg);
+  for(const d of REGION){
+    const cc=REGION_CENTROIDS[d.name];if(!cc)continue;
+    const v=typeof d.anc==='number'?d.anc:0;
+    const t=maxV>minV?(v-minV)/(maxV-minV):0.5;
+    const rad=(8+12*t).toFixed(1);
+    const op=(0.25+0.75*t).toFixed(2);
+    const fill='rgba('+PRIMARY_RGB[0]+','+PRIMARY_RGB[1]+','+PRIMARY_RGB[2]+','+op+')';
+    const tipH='<strong>'+d.name+'</strong><br>'+PRIMARY_LABEL+': '+v+(d.lisa?'<br>LISA: '+(LISA_LABELS[d.lisa]||d.lisa):'');
+    const ci=svgEl('circle',{cx:cc.x,cy:cc.y,r:rad,fill,stroke:'white','stroke-width':'1.5',cursor:'pointer'},svg);
+    ci.addEventListener('mouseenter',e=>tip(e,tipH));ci.addEventListener('mousemove',e=>tip(e,tipH));ci.addEventListener('mouseleave',hideTip);
+    svgEl('text',{x:cc.x,y:cc.y+3.5,'text-anchor':'middle','font-size':'8',fill:'white','font-weight':'700'},svg).textContent=ra(d.name);
+  }
+  c.appendChild(svg);
+}
+
+function renderLISA(){
+  const c=document.getElementById('lisaPanel');c.innerHTML='';
+  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 400 450',style:'max-height:270px;display:block'});
+  svgEl('path',{d:GHANA_PATH,fill:'#ecf0f1',stroke:'#95a5a6','stroke-width':'1.5'},svg);
+  for(const d of REGION){
+    const cc=REGION_CENTROIDS[d.name];if(!cc)continue;
+    const cls=d.lisa||'NS';
+    const fill=LISA_COLORS[cls]||'#bdc3c7';
+    const tipH='<strong>'+d.name+'</strong><br>LISA: <strong>'+(LISA_LABELS[cls]||cls)+'</strong>';
+    const ci=svgEl('circle',{cx:cc.x,cy:cc.y,r:'13',fill,stroke:'white','stroke-width':'1.5',cursor:'pointer',opacity:'0.9'},svg);
+    ci.addEventListener('mouseenter',e=>tip(e,tipH));ci.addEventListener('mousemove',e=>tip(e,tipH));ci.addEventListener('mouseleave',hideTip);
+    svgEl('text',{x:cc.x,y:cc.y+3.5,'text-anchor':'middle','font-size':'7.5',fill:'white','font-weight':'700'},svg).textContent=cls;
+  }
+  // legend
+  let lx=210,ly=370;
+  for(const[cls,col]of Object.entries(LISA_COLORS)){
+    svgEl('rect',{x:lx,y:ly-9,width:11,height:11,fill:col,rx:'2'},svg);
+    svgEl('text',{x:lx+15,y:ly,'font-size':'9',fill:'#333'},svg).textContent=cls+': '+(LISA_LABELS[cls]||cls);
+    ly+=14;
+  }
+  c.appendChild(svg);
+}
 
 function hBar(container,labels,values,colors,tips,xLabel,maxV){
   if(!labels.length){container.innerHTML='<p style="color:#aaa;padding:10px">No data</p>';return}
@@ -167,18 +228,13 @@ function vBar(container,labels,values,colors,tips,yLabel,maxV){
 }
 
 function renderRegion(){
-  const c=document.getElementById('regionChart');
-  c.innerHTML='';
+  const c=document.getElementById('regionChart');c.innerHTML='';
   const labels=REGION.map(d=>d.name);
   const vals=REGION.map(d=>typeof d.anc==='number'?d.anc:0);
   const palette=['#c0392b','#e67e22','#f1c40f','#27ae60','#1abc9c','#2980b9','#8e44ad','#e91e63','#795548','#607d8b'];
-  const tips=REGION.map((d,i)=>'<strong>'+d.name+'</strong><br>'+PRIMARY_LABEL+': '+vals[i]+(SECOND_LABEL&&d.tfr?'<br>'+SECOND_LABEL+': '+d.tfr:''));
-  const maxV=REGION.length<=3?100:undefined;
-  if(REGION.length<=3){
-    hBar(c,labels,vals,palette,tips,PRIMARY_LABEL,maxV);
-  } else {
-    vBar(c,labels,vals,palette,tips,PRIMARY_LABEL.replace('(%)','')||'',undefined);
-  }
+  const tips=REGION.map((d,i)=>'<strong>'+d.name+'</strong><br>'+PRIMARY_LABEL+': '+vals[i]+(SECOND_LABEL&&d.tfr?'<br>'+SECOND_LABEL+': '+d.tfr:'')+(d.lisa?'<br>LISA: '+(LISA_LABELS[d.lisa]||d.lisa):''));
+  if(REGION.length<=3){hBar(c,labels,vals,palette,tips,PRIMARY_LABEL,100);}
+  else{vBar(c,labels,vals,palette,tips,PRIMARY_LABEL.replace('(%)','').trim(),undefined);}
 }
 
 function renderML(){
@@ -196,7 +252,7 @@ function renderSHAP(){
   const labels=sorted.map(d=>d.feat);
   const vals=sorted.map(d=>Math.round(d.imp*100));
   const maxImp=Math.max(...vals);
-  const cols=vals.map(v=>{const t=v/maxImp;const r=Math.round(30+t*195);const g=Math.round(130-t*80);return 'rgb('+r+','+g+',60)'});
+  const cols=vals.map(v=>{const t=v/maxImp;const rr=Math.round(30+t*195);const gg=Math.round(130-t*80);return 'rgb('+rr+','+gg+',60)'});
   const tips=sorted.map(d=>'<strong>'+d.feat+'</strong><br>SHAP importance: '+(d.imp*100).toFixed(1)+'%');
   hBar(c,labels,vals,cols,tips,'SHAP Importance (%)',undefined);
 }
@@ -229,6 +285,7 @@ function renderFindings(){
 }
 
 function renderAll(){
+  renderChoropleth();renderLISA();
   renderRegion();renderML();renderSHAP();renderTimeline();renderMethods();renderFindings();
 }
 
