@@ -187,28 +187,85 @@ function renderPanelD(){const el=document.getElementById('pD');if(!el)return;el.
 hBar(el,ML_LBL,ML_VAL,null,ML_LBL.map((l,i)=>l+': '+ML_VAL[i]),'Score');}
 function renderPanelE(){const el=document.getElementById('pE');if(!el)return;el.innerHTML='';
 hBar(el,SHAP_LBL,SHAP_VAL,SHAP_COL,SHAP_LBL.map((l,i)=>l+': '+SHAP_VAL[i].toFixed(2)),'Mean |SHAP|');}
-function renderPanelF(){const el=document.getElementById('pF');if(!el)return;el.innerHTML='';
-const mL=54,mR=26,mT=20,mB=50,ch=200;
-const wEl=el.getBoundingClientRect().width||500;const w=Math.max(wEl,360);const pW=w-mL-mR;
-const xs=SC_PTS.map(d=>d.x),ys=SC_PTS.map(d=>d.y);
-const xMn=Math.min(...xs)-3,xMx=Math.max(...xs)+5,yMn=0,yMx=Math.max(...ys)*1.15;
-const px=v=>mL+(v-xMn)/(xMx-xMn)*pW;const py=v=>mT+ch-(v-yMn)/(yMx-yMn)*ch;
-const svg=svgEl('svg',{width:'100%',viewBox:'0 0 '+w+' '+(mT+ch+mB),style:'display:block'},el);
-[0.25,0.5,0.75,1].forEach(t=>{const yg=mT+ch*(1-t);svgEl('line',{x1:mL,y1:yg,x2:mL+pW,y2:yg,stroke:'#e8eaf6','stroke-width':'.8'},svg);svgEl('text',{x:mL-3,y:yg+4,'text-anchor':'end','font-size':'9','fill':'#aaa'},svg).textContent=(yMx*t).toFixed(1);});
-const n=SC_PTS.length,sx=SC_PTS.reduce((a,d)=>a+d.x,0),sy=SC_PTS.reduce((a,d)=>a+d.y,0),sxy=SC_PTS.reduce((a,d)=>a+d.x*d.y,0),sx2=SC_PTS.reduce((a,d)=>a+d.x*d.x,0);
-const sl=(n*sxy-sx*sy)/(n*sx2-sx*sx)||0,ic=(sy-sl*sx)/n;
-svgEl('line',{x1:px(xMn),y1:py(sl*xMn+ic),x2:px(xMx),y2:py(sl*xMx+ic),stroke:'rgba(180,180,180,.5)','stroke-width':'2','stroke-dasharray':'6,4'},svg);
-SC_PTS.forEach(d=>{
-  const c=svgEl('circle',{cx:px(d.x),cy:py(d.y),r:9,fill:LISA_COLORS[d.lisa]||'#bdc3c7',stroke:'white','stroke-width':'1.2',opacity:'.9',cursor:'pointer'},svg);
-  c.addEventListener('mouseenter',e=>showTip(e,'<strong>'+d.n+'</strong><br>Poverty Rate: '+d.x+'%<br>HIV-TB Burden Index: '+d.y));
-  c.addEventListener('mousemove',moveTip);c.addEventListener('mouseleave',hideTip);
-  svgEl('text',{x:px(d.x),y:py(d.y)-12,'text-anchor':'middle','font-size':'7.5','fill':'#555'},svg).textContent=d.n;
-});
-svgEl('line',{x1:mL,y1:mT,x2:mL,y2:mT+ch,stroke:'#ccc'},svg);
-svgEl('line',{x1:mL,y1:mT+ch,x2:mL+pW,y2:mT+ch,stroke:'#ccc'},svg);
-svgEl('text',{x:mL+pW/2,y:mT+ch+36,'text-anchor':'middle','font-size':'10','fill':'#666'},svg).textContent='Poverty Rate (%)';
-svgEl('text',{x:14,y:mT+ch/2,'text-anchor':'middle','font-size':'10','fill':'#666',transform:'rotate(-90,14,'+(mT+ch/2)+')'},svg).textContent='HIV-TB Burden Index';}
-
+function renderPanelF(){
+  const el=document.getElementById('pF');if(!el)return;el.innerHTML='';
+  const ABBR={"Gr.Accra":"GA","ASHANTI":"AS","CENTRAL":"CE","EASTERN":"EA","WESTERN":"WE","VOLTA":"VO","OTI":"OT","Bono E":"BE","AHAFO":"AH","BONO":"BO","W.North":"WN","UPPER EAST":"UE","UPPER WEST":"UW","NORTHERN":"NO","SAVANNAH":"SV","NE":"NE"};
+  const FNAME={"Gr.Accra":"Greater Accra","ASHANTI":"Ashanti","CENTRAL":"Central","EASTERN":"Eastern","WESTERN":"Western","VOLTA":"Volta","OTI":"Oti","Bono E":"Bono East","AHAFO":"Ahafo","BONO":"Bono","W.North":"W. North","UPPER EAST":"Upper East","UPPER WEST":"Upper West","NORTHERN":"Northern","SAVANNAH":"Savannah","NE":"N. East"};
+  const LBELOW={"WESTERN":1,"AHAFO":1,"OTI":1,"W.North":1};
+  const mL=58,mR=26,mT=24,mB=32,ch=185;
+  const wEl=el.getBoundingClientRect().width||500;
+  const w=Math.max(wEl,360);const pW=w-mL-mR;
+  const xs=SC_PTS.map(d=>d.x),ys=SC_PTS.map(d=>d.y);
+  const xRange=Math.max(...xs)-Math.min(...xs)||1;
+  const yRange=Math.max(...ys)-Math.min(...ys)||1;
+  const xMn=Math.min(...xs)-xRange*0.08,xMx=Math.max(...xs)+xRange*0.1;
+  const yMn=Math.min(...ys)>0?Math.max(0,Math.min(...ys)-yRange*0.1):0;
+  const yMx=Math.max(...ys)+yRange*0.12;
+  const px=v=>mL+(v-xMn)/(xMx-xMn)*pW;
+  const py=v=>mT+ch-(v-yMn)/(yMx-yMn)*ch;
+  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 '+w+' '+(mT+ch+mB),style:'display:block'},el);
+  // Gridlines
+  [0.25,0.5,0.75,1].forEach(t=>{
+    const yg=mT+ch*(1-t);
+    svgEl('line',{x1:mL,y1:yg,x2:mL+pW,y2:yg,stroke:'#e8eaf6','stroke-width':'.8'},svg);
+    svgEl('text',{x:mL-4,y:yg+4,'text-anchor':'end','font-size':'9','fill':'#aaa'},svg).textContent=(yMn+(yMx-yMn)*t).toFixed(1);
+  });
+  // Regression line
+  const n=SC_PTS.length,sx=SC_PTS.reduce((a,d)=>a+d.x,0),sy=SC_PTS.reduce((a,d)=>a+d.y,0),
+    sxy=SC_PTS.reduce((a,d)=>a+d.x*d.y,0),sx2=SC_PTS.reduce((a,d)=>a+d.x*d.x,0);
+  const sl=(n*sxy-sx*sy)/(n*sx2-sx*sx)||0,ic=(sy-sl*sx)/n;
+  svgEl('line',{x1:px(xMn),y1:py(sl*xMn+ic),x2:px(xMx),y2:py(sl*xMx+ic),
+    stroke:'rgba(160,160,160,.45)','stroke-width':'2','stroke-dasharray':'6,4'},svg);
+  // Dots + abbreviated labels
+  SC_PTS.forEach(d=>{
+    const ab=ABBR[d.n]||d.n.slice(0,2).toUpperCase();
+    const fn=FNAME[d.n]||d.n;
+    const cx=px(d.x),cy=py(d.y);
+    const circ=svgEl('circle',{cx:cx,cy:cy,r:9,fill:LISA_COLORS[d.lisa]||'#bdc3c7',
+      stroke:'white','stroke-width':'1.5',opacity:'.92',cursor:'pointer'},svg);
+    circ.addEventListener('mouseenter',e=>showTip(e,'<strong>'+fn+'</strong><br>Poverty Rate: '+d.x+'%<br>HIV-TB Index: '+d.y+''));
+    circ.addEventListener('mousemove',moveTip);circ.addEventListener('mouseleave',hideTip);
+    const yOff=LBELOW[d.n]?21:-13;
+    svgEl('text',{x:cx,y:cy+yOff,'text-anchor':'middle','font-size':'9.5','font-weight':'700','fill':'#222'},svg).textContent=ab;
+  });
+  // Axes
+  svgEl('line',{x1:mL,y1:mT,x2:mL,y2:mT+ch,stroke:'#bbb'},svg);
+  svgEl('line',{x1:mL,y1:mT+ch,x2:mL+pW,y2:mT+ch,stroke:'#bbb'},svg);
+  svgEl('text',{x:mL+pW/2,y:mT+ch+18,'text-anchor':'middle','font-size':'10','fill':'#555'},svg)
+    .textContent='Poverty Rate (%)';
+  svgEl('text',{x:12,y:mT+ch/2,'text-anchor':'middle','font-size':'10','fill':'#555',
+    transform:'rotate(-90,12,'+(mT+ch/2)+')'},svg).textContent='HIV-TB Burden Index';
+  // ── Color-coded regional name legend (HTML below SVG) ──────────────────────
+  const legWrap=document.createElement('div');
+  legWrap.style.cssText='margin-top:8px;padding:6px 8px;background:#f8faff;border-radius:6px;border:1px solid #e8eaf6';
+  const legTitle=document.createElement('div');
+  legTitle.style.cssText='font-size:.7em;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px';
+  legTitle.textContent='Region Key';
+  legWrap.appendChild(legTitle);
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:3px 6px';
+  // Sort by LISA category then name for visual grouping
+  const sorted=[...SC_PTS].sort((a,b)=>{
+    const order={HH:0,HL:1,LH:2,LL:3,NS:4};
+    return (order[a.lisa]||4)-(order[b.lisa]||4)||a.n.localeCompare(b.n);
+  });
+  sorted.forEach(d=>{
+    const ab=ABBR[d.n]||d.n.slice(0,2).toUpperCase();
+    const fn=FNAME[d.n]||d.n;
+    const col=LISA_COLORS[d.lisa]||'#bdc3c7';
+    const cell=document.createElement('div');
+    cell.style.cssText='display:flex;align-items:center;gap:4px;font-size:.73em;cursor:default';
+    cell.title=fn+' — LISA: '+(d.lisa||'NS');
+    const sw=document.createElement('span');
+    sw.style.cssText='width:10px;height:10px;border-radius:2px;flex-shrink:0;background:'+col+';border:1px solid rgba(0,0,0,.1)';
+    const tx=document.createElement('span');
+    tx.innerHTML='<strong>'+ab+'</strong><span style="color:#666;margin-left:2px">'+fn+'</span>';
+    cell.appendChild(sw);cell.appendChild(tx);
+    grid.appendChild(cell);
+  });
+  legWrap.appendChild(grid);
+  el.appendChild(legWrap);
+}
 function renderAll(){renderChoropleth();renderLISA();renderPanelC();renderPanelD();renderPanelE();renderPanelF();}
 requestAnimationFrame(()=>renderAll());
 let _rt;window.addEventListener('resize',()=>{clearTimeout(_rt);_rt=setTimeout(renderAll,180);});
