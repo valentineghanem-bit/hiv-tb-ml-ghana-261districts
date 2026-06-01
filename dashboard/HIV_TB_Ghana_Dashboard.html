@@ -235,35 +235,46 @@ function renderPanelF(){
     .textContent='Poverty Rate (%)';
   svgEl('text',{x:12,y:mT+ch/2,'text-anchor':'middle','font-size':'10','fill':'#555',
     transform:'rotate(-90,12,'+(mT+ch/2)+')'},svg).textContent='HIV-TB Burden Index';
-  // ── Color-coded regional name legend (HTML below SVG) ──────────────────────
+  // ── LISA-grouped regional legend (HTML below SVG) ────────────────────────
   const legWrap=document.createElement('div');
   legWrap.style.cssText='margin-top:8px;padding:6px 8px;background:#f8faff;border-radius:6px;border:1px solid #e8eaf6';
   const legTitle=document.createElement('div');
   legTitle.style.cssText='font-size:.7em;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px';
-  legTitle.textContent='Region Key';
+  legTitle.textContent='Region Key — by LISA Cluster';
   legWrap.appendChild(legTitle);
-  const grid=document.createElement('div');
-  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:3px 6px';
-  // Sort by LISA category then name for visual grouping
-  const sorted=[...SC_PTS].sort((a,b)=>{
-    const order={HH:0,HL:1,LH:2,LL:3,NS:4};
-    return (order[a.lisa]||4)-(order[b.lisa]||4)||a.n.localeCompare(b.n);
+  const LISA_GROUPS=[
+    {key:'HH',label:'High-High',col:'#c0392b',txt:'#fff'},
+    {key:'HL',label:'High-Low', col:'#e67e22',txt:'#fff'},
+    {key:'LH',label:'Low-High', col:'#82c0e8',txt:'#333'},
+    {key:'LL',label:'Low-Low',  col:'#2980b9',txt:'#fff'},
+    {key:'NS',label:'Not Sig.', col:'#bdc3c7',txt:'#333'}
+  ];
+  const groups=document.createElement('div');
+  groups.style.cssText='display:flex;gap:5px;flex-wrap:wrap;align-items:flex-start';
+  LISA_GROUPS.forEach(g=>{
+    const pts=SC_PTS.filter(d=>(d.lisa||'NS')===g.key);
+    if(!pts.length)return;
+    const grp=document.createElement('div');
+    grp.style.cssText='flex:1;min-width:70px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.1)';
+    const hdr=document.createElement('div');
+    hdr.style.cssText='background:'+g.col+';color:'+g.txt+';font-size:.68em;font-weight:700;padding:3px 6px;text-align:center;letter-spacing:.03em';
+    hdr.textContent=g.key+' • '+g.label;
+    grp.appendChild(hdr);
+    pts.sort((a,b)=>a.n.localeCompare(b.n)).forEach(d=>{
+      const ab=ABBR[d.n]||d.n.slice(0,2).toUpperCase();
+      const fn=FNAME[d.n]||d.n;
+      const item=document.createElement('div');
+      item.style.cssText='display:flex;align-items:center;gap:3px;padding:2px 5px;font-size:.71em;background:#fff;border-top:1px solid #f0f0f0';
+      item.title=fn+' — LISA: '+g.key;
+      const dot=document.createElement('span');
+      dot.style.cssText='width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+g.col+';border:1px solid rgba(0,0,0,.12)';
+      const tx=document.createElement('span');
+      tx.innerHTML='<strong>'+ab+'</strong><span style="color:#777;margin-left:2px">'+fn+'</span>';
+      item.appendChild(dot);item.appendChild(tx);grp.appendChild(item);
+    });
+    groups.appendChild(grp);
   });
-  sorted.forEach(d=>{
-    const ab=ABBR[d.n]||d.n.slice(0,2).toUpperCase();
-    const fn=FNAME[d.n]||d.n;
-    const col=LISA_COLORS[d.lisa]||'#bdc3c7';
-    const cell=document.createElement('div');
-    cell.style.cssText='display:flex;align-items:center;gap:4px;font-size:.73em;cursor:default';
-    cell.title=fn+' — LISA: '+(d.lisa||'NS');
-    const sw=document.createElement('span');
-    sw.style.cssText='width:10px;height:10px;border-radius:2px;flex-shrink:0;background:'+col+';border:1px solid rgba(0,0,0,.1)';
-    const tx=document.createElement('span');
-    tx.innerHTML='<strong>'+ab+'</strong><span style="color:#666;margin-left:2px">'+fn+'</span>';
-    cell.appendChild(sw);cell.appendChild(tx);
-    grid.appendChild(cell);
-  });
-  legWrap.appendChild(grid);
+  legWrap.appendChild(groups);
   el.appendChild(legWrap);
 }
 function renderAll(){renderChoropleth();renderLISA();renderPanelC();renderPanelD();renderPanelE();renderPanelF();}
