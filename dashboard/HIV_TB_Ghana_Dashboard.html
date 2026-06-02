@@ -55,7 +55,7 @@ tr:hover td{background:#f8faff}
 <div class="kpi-row"><div class="kpi-card"><div class="kpi-val">99.8%</div><div class="kpi-lbl">LightGBM AUC</div><div class="kpi-sub">LOROCV validated</div></div><div class="kpi-card"><div class="kpi-val">0.449</div><div class="kpi-lbl">Bivariate Moran's I</div><div class="kpi-sub">HIV × TB</div></div><div class="kpi-card"><div class="kpi-val">31</div><div class="kpi-lbl">HH Co-cluster Dist.</div><div class="kpi-sub">Southern belt</div></div><div class="kpi-card"><div class="kpi-val">0.916</div><div class="kpi-lbl">GWR R²</div><div class="kpi-sub">Local spatial fit</div></div><div class="kpi-card"><div class="kpi-val">0.44</div><div class="kpi-lbl">SEM β Poverty→HIV</div><div class="kpi-sub">p < 0.001</div></div><div class="kpi-card"><div class="kpi-val">260</div><div class="kpi-lbl">Districts</div><div class="kpi-sub">All Ghana</div></div></div>
 <div class="grid">
   <div class="panel"><h3>District Choropleth — HIV-TB Burden Index</h3><div id="cPanel"></div><div id="legC" style="display:flex;align-items:center;gap:6px;margin-top:4px;padding:0 2px"></div></div>
-  <div class="panel"><h3>LISA Spatial Clusters</h3><div id="lPanel"></div><div class="leg"><span><i style="background:#c0392b"></i>HH High-High</span><span><i style="background:#2980b9"></i>LL Low-Low</span><span><i style="background:#e67e22"></i>HL High-Low</span><span><i style="background:#82c0e8"></i>LH Low-High</span><span><i style="background:#bdc3c7"></i>NS Not sig.</span></div></div>
+  <div class="panel"><h3>LISA Spatial Clusters</h3><div id="lPanel"></div><div id="legL" style="margin-top:6px"></div></div>
   <div class="panel full"><h3>LISA Co-Cluster Counts (HIV × TB)</h3><div id="pC" style="width:100%;min-height:220px"></div></div>
   <div class="panel"><h3>Model Performance Ladder</h3><div id="pD" style="width:100%;min-height:220px"></div></div>
   <div class="panel"><h3>SHAP Feature Importance (LightGBM)</h3><div id="pE" style="width:100%;min-height:220px"></div></div>
@@ -131,6 +131,7 @@ function renderLISA(){
   const c=document.getElementById('lPanel');c.innerHTML='';
   const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px'},c);
   svgEl('rect',{x:0,y:0,width:560,height:660,fill:'#ecf0f1'},svg);
+  let af=null;const paths=[];
   for(const d of DSVG){
     const reg=d.r;
     const rd=DDATA[d.n];
@@ -140,9 +141,21 @@ function renderLISA(){
     let el;
     if(d.dot){el=svgEl('circle',{cx:d.cx,cy:d.cy,r:5,fill,stroke:'rgba(255,255,255,0.6)','stroke-width':'0.5',opacity:'0.85',cursor:'pointer'},svg);}
     else{el=svgEl('path',{d:d.d,fill,stroke:'rgba(255,255,255,0.5)','stroke-width':'0.2',opacity:'0.85',cursor:'pointer'},svg);}
+    el.dataset.lisa=lisaClass;paths.push(el);
     el.addEventListener('mouseenter',e=>showTip(e,tipH));el.addEventListener('mousemove',moveTip);el.addEventListener('mouseleave',hideTip);
   }
   RLBL.forEach(([x,y,t])=>svgEl('text',{x,y,'text-anchor':'middle','font-size':'8','fill':'rgba(30,30,30,0.75)','font-weight':'600','pointer-events':'none',style:'text-shadow:0 0 3px #ecf0f1'},svg).textContent=t);
+  const ll=document.getElementById('legL');if(!ll)return;ll.innerHTML='';
+  const cats=['HH','HL','LH','LL','NS'],lbs=['High-High','High-Low','Low-High','Low-Low','Not significant'];
+  const sws=[];const lw=document.createElement('div');lw.className='leg';
+  cats.forEach((lbl,i)=>{
+    const sw=document.createElement('span');sw.style.cssText='cursor:pointer;padding:1px 4px;border-radius:3px;border:1px solid rgba(0,0,0,.08)';
+    sw.innerHTML='<i style="background:'+LISA_COLORS[lbl]+'"></i>'+lbl+' '+lbs[i];
+    sws.push(sw);
+    sw.addEventListener('click',()=>{af=(af===lbl)?null:lbl;paths.forEach(p=>p.setAttribute('opacity',!af||p.dataset.lisa===af?'0.85':'0.12'));sws.forEach((s,si)=>s.style.opacity=!af||cats[si]===af?'1':'0.35');});
+    lw.appendChild(sw);
+  });
+  ll.appendChild(lw);
 }
 
 function hBar(el,labels,vals,colors,tips,xLabel){
