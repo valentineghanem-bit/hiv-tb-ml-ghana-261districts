@@ -211,29 +211,61 @@ const hi=document.createElement('span');hi.textContent='Higher';hi.style.cssText
 lg.appendChild(ltx);lg.appendChild(lo);lg.appendChild(bar);lg.appendChild(hi);
 el.appendChild(lg);}
 function renderPanelF(){const el=document.getElementById('pF');if(!el)return;el.innerHTML='';
-const mL=54,mR=26,mT=20,mB=50,ch=200;
-const wEl=el.getBoundingClientRect().width||500;const w=Math.max(wEl,360);const pW=w-mL-mR;
+const AB={'Gr.Accra':'GA','Ashanti':'AS','Central':'CE','Eastern':'EA','Western':'WE',
+  'Volta':'VO','Oti':'OT','Bono E':'BE','Ahafo':'AH','Bono':'BO',
+  'W.North':'WN','UE':'UE','UW':'UW','Northern':'NO','Savannah':'SV','NE':'NE'};
+const FN={'Gr.Accra':'Gr. Accra','Ashanti':'Ashanti','Central':'Central','Eastern':'Eastern',
+  'Western':'Western','Volta':'Volta','Oti':'Oti','Bono E':'Bono East',
+  'Ahafo':'Ahafo','Bono':'Bono','W.North':'W. North','UE':'Upper East',
+  'UW':'Upper West','Northern':'Northern','Savannah':'Savannah','NE':'N. East'};
+const LB={'Western':1,'Ahafo':1,'Oti':1,'W.North':1};
+const mL=58,mR=26,mT=24,mB=32,ch=182;
+const wEl=el.getBoundingClientRect().width||500,w=Math.max(wEl,340),pW=w-mL-mR;
 const xs=SC_PTS.map(d=>d.x),ys=SC_PTS.map(d=>d.y);
-const xMn=Math.min(...xs)-3,xMx=Math.max(...xs)+5,yMn=0,yMx=Math.max(...ys)*1.15;
-const px=v=>mL+(v-xMn)/(xMx-xMn)*pW;const py=v=>mT+ch-(v-yMn)/(yMx-yMn)*ch;
+const xR=Math.max(...xs)-Math.min(...xs)||1,yR=Math.max(...ys)-Math.min(...ys)||1;
+const xMn=Math.min(...xs)-xR*0.08,xMx=Math.max(...xs)+xR*0.1;
+const yMn=Math.max(0,Math.min(...ys)-yR*0.1),yMx=Math.max(...ys)+yR*0.12;
+const px=v=>mL+(v-xMn)/(xMx-xMn)*pW,py=v=>mT+ch-(v-yMn)/(yMx-yMn)*ch;
 const svg=svgEl('svg',{width:'100%',viewBox:'0 0 '+w+' '+(mT+ch+mB),style:'display:block'},el);
-[0.25,0.5,0.75,1].forEach(t=>{const yg=mT+ch*(1-t);svgEl('line',{x1:mL,y1:yg,x2:mL+pW,y2:yg,stroke:'#e8eaf6','stroke-width':'.8'},svg);svgEl('text',{x:mL-3,y:yg+4,'text-anchor':'end','font-size':'9','fill':'#aaa'},svg).textContent=(yMx*t).toFixed(1);});
-const n=SC_PTS.length,sx=SC_PTS.reduce((a,d)=>a+d.x,0),sy=SC_PTS.reduce((a,d)=>a+d.y,0),sxy=SC_PTS.reduce((a,d)=>a+d.x*d.y,0),sx2=SC_PTS.reduce((a,d)=>a+d.x*d.x,0);
-const sl=(n*sxy-sx*sy)/(n*sx2-sx*sx)||0,ic=(sy-sl*sx)/n;
-svgEl('line',{x1:px(xMn),y1:py(sl*xMn+ic),x2:px(xMx),y2:py(sl*xMx+ic),stroke:'rgba(180,180,180,.5)','stroke-width':'2','stroke-dasharray':'6,4'},svg);
-SC_PTS.forEach(d=>{
-  const c=svgEl('circle',{cx:px(d.x),cy:py(d.y),r:9,fill:LISA_COLORS[d.lisa]||'#bdc3c7',stroke:'white','stroke-width':'1.2',opacity:'.9',cursor:'pointer'},svg);
-  c.addEventListener('mouseenter',e=>showTip(e,'<strong>'+d.n+'</strong><br>Poverty Rate: '+d.x+'%<br>HIV-TB Burden Index: '+d.y));
-  c.addEventListener('mousemove',moveTip);c.addEventListener('mouseleave',hideTip);
-  svgEl('text',{x:px(d.x),y:py(d.y)-12,'text-anchor':'middle','font-size':'7.5','fill':'#555'},svg).textContent=d.n;
+[0.25,0.5,0.75,1].forEach(t=>{
+  const yg=mT+ch*(1-t);
+  svgEl('line',{x1:mL,y1:yg,x2:mL+pW,y2:yg,stroke:'#e8eaf6','stroke-width':'.8'},svg);
+  svgEl('text',{x:mL-4,y:yg+4,'text-anchor':'end','font-size':'9','fill':'#aaa'},svg).textContent=(yMn+(yMx-yMn)*t).toFixed(1);
 });
-svgEl('line',{x1:mL,y1:mT,x2:mL,y2:mT+ch,stroke:'#ccc'},svg);
-svgEl('line',{x1:mL,y1:mT+ch,x2:mL+pW,y2:mT+ch,stroke:'#ccc'},svg);
-svgEl('text',{x:mL+pW/2,y:mT+ch+36,'text-anchor':'middle','font-size':'10','fill':'#666'},svg).textContent='Poverty Rate (%)';
-svgEl('text',{x:14,y:mT+ch/2,'text-anchor':'middle','font-size':'10','fill':'#666',transform:'rotate(-90,14,'+(mT+ch/2)+')'},svg).textContent='HIV-TB Burden Index';
-const lg=document.createElement('div');lg.className='leg';lg.style.marginTop='5px';
-[['HH','High-High','#c0392b'],['LL','Low-Low','#2980b9'],['HL','High-Low','#e67e22'],['LH','Low-High','#82c0e8'],['NS','Not significant','#bdc3c7']].forEach(([k,lb,c])=>{const s=document.createElement('span');s.innerHTML='<i style="background:'+c+'"></i>'+k+' '+lb;lg.appendChild(s);});
-el.appendChild(lg);}
+const _n=SC_PTS.length,_sx=SC_PTS.reduce((a,d)=>a+d.x,0),_sy=SC_PTS.reduce((a,d)=>a+d.y,0),
+  _sxy=SC_PTS.reduce((a,d)=>a+d.x*d.y,0),_sxx=SC_PTS.reduce((a,d)=>a+d.x*d.x,0);
+const sl=(_n*_sxy-_sx*_sy)/(_n*_sxx-_sx*_sx)||0,ic=(_sy-sl*_sx)/_n;
+svgEl('line',{x1:px(xMn),y1:py(sl*xMn+ic),x2:px(xMx),y2:py(sl*xMx+ic),stroke:'rgba(160,160,160,.45)','stroke-width':'2','stroke-dasharray':'6,4'},svg);
+SC_PTS.forEach(d=>{
+  const ab=AB[d.n]||d.n.slice(0,2).toUpperCase(),fn=FN[d.n]||d.n;
+  const cx2=px(d.x).toFixed(1),cy2=py(d.y).toFixed(1);
+  const ci=svgEl('circle',{cx:cx2,cy:cy2,r:9,fill:LISA_COLORS[d.lisa]||'#bdc3c7',stroke:'white','stroke-width':'1.5',opacity:'.92',cursor:'pointer'},svg);
+  ci.addEventListener('mouseenter',e=>showTip(e,'<strong>'+fn+'</strong><br>Poverty Rate: <strong>'+d.x+'%</strong><br>HIV-TB Burden Index: <strong>'+d.y+'</strong>'));
+  ci.addEventListener('mousemove',moveTip);ci.addEventListener('mouseleave',hideTip);
+  svgEl('text',{x:cx2,y:(parseFloat(cy2)+(LB[d.n]?21:-13)).toFixed(1),'text-anchor':'middle','font-size':'9.5','font-weight':'700','fill':'#222'},svg).textContent=ab;
+});
+svgEl('line',{x1:mL,y1:mT,x2:mL,y2:mT+ch,stroke:'#bbb'},svg);
+svgEl('line',{x1:mL,y1:mT+ch,x2:mL+pW,y2:mT+ch,stroke:'#bbb'},svg);
+svgEl('text',{x:mL+pW/2,y:mT+ch+18,'text-anchor':'middle','font-size':'10','fill':'#555'},svg).textContent='Poverty Rate (%)';
+svgEl('text',{x:12,y:mT+ch/2,'text-anchor':'middle','font-size':'10','fill':'#555',transform:'rotate(-90,12,'+(mT+ch/2)+')'},svg).textContent='HIV-TB Burden Index';
+const lw=document.createElement('div');lw.style.cssText='margin-top:8px;padding:6px 8px;background:#f8faff;border-radius:6px;border:1px solid #e8eaf6';
+const lt=document.createElement('div');lt.style.cssText='font-size:.7em;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px';lt.textContent='Region Key — by LISA Cluster';lw.appendChild(lt);
+const LGS=[{key:'HH',label:'High-High',col:'#c0392b',txt:'#fff'},{key:'HL',label:'High-Low',col:'#e67e22',txt:'#fff'},{key:'LH',label:'Low-High',col:'#82c0e8',txt:'#333'},{key:'LL',label:'Low-Low',col:'#2980b9',txt:'#fff'},{key:'NS',label:'Not Sig.',col:'#bdc3c7',txt:'#333'}];
+const gd=document.createElement('div');gd.style.cssText='display:flex;gap:5px;flex-wrap:wrap;align-items:flex-start';
+LGS.forEach(g=>{
+  const pts2=SC_PTS.filter(d=>(d.lisa||'NS')===g.key);if(!pts2.length)return;
+  const grp=document.createElement('div');grp.style.cssText='flex:1;min-width:68px;border-radius:5px;overflow:hidden;border:1px solid rgba(0,0,0,.1)';
+  const hd2=document.createElement('div');hd2.style.cssText='background:'+g.col+';color:'+g.txt+';font-size:.67em;font-weight:700;padding:3px 5px;text-align:center;letter-spacing:.03em';hd2.textContent=g.key+' • '+g.label;grp.appendChild(hd2);
+  pts2.sort((a,b)=>a.n.localeCompare(b.n)).forEach(d=>{
+    const ab2=AB[d.n]||d.n.slice(0,2).toUpperCase(),fn2=FN[d.n]||d.n;
+    const it=document.createElement('div');it.style.cssText='display:flex;align-items:center;gap:3px;padding:2px 4px;font-size:.7em;background:#fff;border-top:1px solid #f0f0f0';
+    const dot=document.createElement('span');dot.style.cssText='width:8px;height:8px;border-radius:50%;flex-shrink:0;background:'+g.col+';border:1px solid rgba(0,0,0,.12)';
+    const tx=document.createElement('span');tx.innerHTML='<strong>'+ab2+'</strong><span style="color:#777;margin-left:2px">'+fn2+'</span>';
+    it.appendChild(dot);it.appendChild(tx);grp.appendChild(it);
+  });
+  gd.appendChild(grp);
+});
+lw.appendChild(gd);el.appendChild(lw);}
 
 function renderAll(){renderChoropleth();renderLISA();renderPanelC();renderPanelD();renderPanelE();renderPanelF();}
 requestAnimationFrame(()=>renderAll());
