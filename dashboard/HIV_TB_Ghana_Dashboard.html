@@ -240,7 +240,7 @@ SC_PTS.forEach(d=>{
   const ab=AB[d.n]||d.n.slice(0,2).toUpperCase(),fn=FN[d.n]||d.n;
   const cx2=px(d.x).toFixed(1),cy2=py(d.y).toFixed(1);
   const ci=svgEl('circle',{cx:cx2,cy:cy2,r:9,fill:LISA_COLORS[d.lisa]||'#bdc3c7',stroke:'white','stroke-width':'1.5',opacity:'.92',cursor:'pointer'},svg);
-  ci.addEventListener('mouseenter',e=>showTip(e,'<strong>'+fn+'</strong><br>Poverty Rate: <strong>'+d.x+'%</strong><br>HIV-TB Burden Index: <strong>'+d.y+'</strong>'));
+  ci.addEventListener('mouseenter',e=>showTip(e,'<strong>'+fn+'</strong><br>Poverty Rate (%): <strong>'+d.x+'</strong><br>HIV-TB Burden Index: <strong>'+d.y+'</strong>'));
   ci.addEventListener('mousemove',moveTip);ci.addEventListener('mouseleave',hideTip);
   svgEl('text',{x:cx2,y:(parseFloat(cy2)+(LB[d.n]?21:-13)).toFixed(1),'text-anchor':'middle','font-size':'9.5','font-weight':'700','fill':'#222'},svg).textContent=ab;
 });
