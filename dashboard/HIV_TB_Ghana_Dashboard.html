@@ -162,7 +162,7 @@ function hBar(el,labels,vals,colors,tips,xLabel){
   const mL=148,mR=55,mT=8,mB=28,bH=22,gap=5;
   const n=labels.length;
   const h=mT+(bH+gap)*n+mB;
-  const wEl=el.getBoundingClientRect().width||500;
+  const wEl=el.offsetWidth||el.getBoundingClientRect().width||500;
   const w=Math.max(wEl,300);
   const pW=w-mL-mR;
   const mx=Math.max(...vals,0.01);
@@ -182,7 +182,7 @@ function hBar(el,labels,vals,colors,tips,xLabel){
 function vBar(el,labels,vals,colors,yLabel){
   const mL=40,mR=10,mT=12,mB=50,ch=200;
   const n=labels.length;
-  const wEl=el.getBoundingClientRect().width||500;
+  const wEl=el.offsetWidth||el.getBoundingClientRect().width||500;
   const w=Math.max(wEl,300);
   const pW=w-mL-mR;
   const bW=Math.max(12,Math.floor(pW/n)-4);
@@ -233,7 +233,7 @@ const FN={'Gr.Accra':'Gr. Accra','Ashanti':'Ashanti','Central':'Central','Easter
   'UW':'Upper West','Northern':'Northern','Savannah':'Savannah','NE':'N. East'};
 const LB={'Western':1,'Ahafo':1,'Oti':1,'W.North':1};
 const mL=58,mR=26,mT=24,mB=32,ch=182;
-const wEl=el.getBoundingClientRect().width||500,w=Math.max(wEl,340),pW=w-mL-mR;
+const wEl=el.offsetWidth||el.getBoundingClientRect().width||500,w=Math.max(wEl,340),pW=w-mL-mR;
 const xs=SC_PTS.map(d=>d.x),ys=SC_PTS.map(d=>d.y);
 const xR=Math.max(...xs)-Math.min(...xs)||1,yR=Math.max(...ys)-Math.min(...ys)||1;
 const xMn=Math.min(...xs)-xR*0.08,xMx=Math.max(...xs)+xR*0.1;
