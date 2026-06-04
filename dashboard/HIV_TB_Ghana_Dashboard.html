@@ -94,7 +94,7 @@ const RLBL=[[389,554,'Gr.Accra'],[214,457,'Ashanti'],[274,572,'Central'],[341,50
 function svgEl(t,a,p){const e=document.createElementNS('http://www.w3.org/2000/svg',t);for(const[k,v]of Object.entries(a||{}))e.setAttribute(k,v);if(p)p.appendChild(e);return e;}
 
 function renderChoropleth(){
-  const c=document.getElementById('cPanel');c.innerHTML='';
+  const c=document.getElementById('cPanel');c.innerHTML='';c.style.cssText='overflow:hidden;max-height:320px';
   const vals=REGION.map(d=>d.anc);
   const mn=Math.min(...vals),mx=Math.max(...vals);
   const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px'},c);
@@ -128,7 +128,7 @@ function renderChoropleth(){
 }
 
 function renderLISA(){
-  const c=document.getElementById('lPanel');c.innerHTML='';
+  const c=document.getElementById('lPanel');c.innerHTML='';c.style.cssText='overflow:hidden;max-height:320px';
   const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px'},c);
   svgEl('rect',{x:0,y:0,width:560,height:660,fill:'#ecf0f1'},svg);
   let af=null;const paths=[];
