@@ -97,7 +97,7 @@ function renderChoropleth(){
   const c=document.getElementById('cPanel');c.innerHTML='';c.style.cssText='overflow:hidden;max-height:320px';
   const vals=REGION.map(d=>d.anc);
   const mn=Math.min(...vals),mx=Math.max(...vals);
-  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px'},c);
+  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px;background:#ecf0f1'},c);
   svgEl('rect',{x:0,y:0,width:560,height:660,fill:'#ecf0f1'},svg);
   for(const d of DSVG){
     const reg=d.r;
@@ -129,7 +129,7 @@ function renderChoropleth(){
 
 function renderLISA(){
   const c=document.getElementById('lPanel');c.innerHTML='';c.style.cssText='overflow:hidden;max-height:320px';
-  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px'},c);
+  const svg=svgEl('svg',{width:'100%',viewBox:'0 0 560 660',style:'display:block;max-height:320px;background:#ecf0f1'},c);
   svgEl('rect',{x:0,y:0,width:560,height:660,fill:'#ecf0f1'},svg);
   let af=null;const paths=[];
   for(const d of DSVG){
