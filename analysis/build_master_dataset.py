@@ -458,7 +458,11 @@ df_final = merged[cols_to_save].copy()
 df_final['Data_Source_HIV'] = 'DHS Ghana 2003 (regional) + WHO GHO (national)'
 df_final['Data_Source_TB'] = 'WHO Global TB Programme (national 2013-2024)'
 df_final['Data_Source_Socioeconomic'] = 'Ghana Statistical Service 2021 Census'
-df_final['Data_Source_Geometry'] = 'Ghana 260-District Shapefile (post-2018)'
+df_final['Data_Source_Geometry'] = (
+ 'Ghana 260-district basemap (post-2018 Local Governance Act); Guan District (Oti Region) '
+ 'added as a 261st row sharing its parent Krachi East Municipal polygon for adjacency purposes '
+ '(no distinct legacy polygon exists) -- structural-gap convention, not a distinct surveyed boundary'
+)
 
 csv_path = OUT / 'Ghana_HIV_TB_Master_Dataset.csv'
 df_final.to_csv(csv_path, index=False)

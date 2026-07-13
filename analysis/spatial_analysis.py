@@ -15,15 +15,15 @@ warnings.filterwarnings('ignore')
 
 np.random.seed(42)
 
-OUT = Path('/sessions/lucid-confident-wozniak/hiv_tb_ghana/outputs')
+OUT = Path(__file__).resolve().parent.parent / 'outputs'
 TAB = OUT / 'tables'
 TAB.mkdir(parents=True, exist_ok=True)
 
 print('='*70)
-print('SPATIAL ANALYSIS PIPELINE — HIV-TB Co-infection Ghana 260 Districts')
+print('SPATIAL ANALYSIS PIPELINE — HIV-TB Co-infection Ghana 261 Districts')
 print('='*70)
 
-gdf = gpd.read_file(OUT / 'data' / 'ghana_260_districts_hiv_tb.geojson')
+gdf = gpd.read_file(OUT / 'data' / 'ghana_261_districts_hiv_tb.geojson')
 print(f'\nLoaded: {len(gdf)} districts')
 
 # Get polygon-based weights (Queen contiguity)
@@ -102,6 +102,10 @@ y_tb = gdf['TB_Incidence_per100k'].values
 # Global bivariate Moran's I
 m_bv = Moran_BV(x_hiv, y_tb, W_rook, permutations=999)
 print(f" Global Bivariate Moran's I (HIV×TB): I={m_bv.I:.4f}, p={m_bv.p_sim:.4f}")
+pd.DataFrame([{
+ 'Variable_X': 'HIV_Prev_Total_pct', 'Variable_Y': 'TB_Incidence_per100k',
+ "Bivariate Moran's I": m_bv.I, 'p-value': m_bv.p_sim,
+}]).to_csv(TAB / 'bivariate_morans_I.csv', index=False)
 
 # Local bivariate LISA
 lisa_bv = Moran_Local_BV(x_hiv, y_tb, W_rook, permutations=999, seed=42)
@@ -152,6 +156,20 @@ try:
  print(f"LM-Error: {ols.lm_error[0]:.3f}, p={ols.lm_error[1]:.4f}")
  print(f"LM-Lag: {ols.lm_lag[0]:.3f}, p={ols.lm_lag[1]:.4f}")
 
+ # Persist OLS diagnostics + coefficients immediately -- do not wait for SEM,
+ # which can fail independently and previously left these unsaved.
+ pd.DataFrame([{
+ 'R2': ols.r2, 'AIC': ols.aic,
+ 'LM_Error_stat': ols.lm_error[0], 'LM_Error_p': ols.lm_error[1],
+ 'LM_Lag_stat': ols.lm_lag[0], 'LM_Lag_p': ols.lm_lag[1],
+ }]).to_csv(TAB / 'ols_diagnostics.csv', index=False)
+ pd.DataFrame({
+ 'Variable': ['Intercept'] + predictors,
+ 'Coefficient': ols.betas.flatten(),
+ 'Std_Error': ols.std_err,
+ 't_stat': ols.t_stat[0] if hasattr(ols, 't_stat') else [np.nan]*(len(predictors)+1),
+ }).to_csv(TAB / 'ols_baseline.csv', index=False)
+
  # Spatial Error Model
  sem = ML_Error(y, X, w=W_rook, name_y='TB_HIV_CoInfection',
  name_x=predictors)
@@ -169,14 +187,6 @@ try:
  lambda z: 0.5 * (1 + np.math.erf(z / np.sqrt(2)))))
  sem_results.to_csv(TAB / 'spatial_error_model.csv', index=False)
  print(sem_results.to_string(index=False))
-
- ols_results = pd.DataFrame({
- 'Variable': ['Intercept'] + predictors,
- 'Coefficient': ols.betas.flatten(),
- 'Std_Error': ols.std_err,
- 't_stat': ols.t_stat[0] if hasattr(ols, 't_stat') else [np.nan]*(len(predictors)+1),
- })
- ols_results.to_csv(TAB / 'ols_baseline.csv', index=False)
 except Exception as e:
  print(f'SEM error: {e}')
 
@@ -200,7 +210,16 @@ try:
 
  gwr_m = GWR(coords_list, yg, Xg, bw)
  gwr_res = gwr_m.fit()
- print(f' GWR R²: {gwr_res.R2:.4f}, AICc: {gwr_res.aicc:.1f}')
+ print(f' GWR global R²: {gwr_res.R2:.4f}, AICc: {gwr_res.aicc:.1f}')
+ print(f' GWR mean local R²: {gwr_res.localR2.mean():.4f}')
+
+ # Persist global fit stats -- distinct from the per-district local R2 mean;
+ # these are two different statistics and must not be conflated in reporting.
+ pd.DataFrame([{
+ 'Bandwidth': bw, 'Global_R2': gwr_res.R2, 'AICc': gwr_res.aicc,
+ 'Mean_Local_R2': gwr_res.localR2.mean(), 'Min_Local_R2': gwr_res.localR2.min(),
+ 'Max_Local_R2': gwr_res.localR2.max(), 'SD_Local_R2': gwr_res.localR2.std(),
+ }]).to_csv(TAB / 'gwr_global_fit.csv', index=False)
 
  # Store local coefficients
  for i, var in enumerate(gwr_predictors):
@@ -226,4 +245,4 @@ except Exception as e:
 gdf.to_file(OUT / 'data' / 'ghana_260_districts_spatial_results.geojson', driver='GeoJSON')
 # Also save as CSV (no geometry)
 gdf.drop(columns='geometry').to_csv(OUT / 'data' / 'spatial_results_260_districts.csv', index=False)
-print('\n✓ Spatial analysis complete.')
+print('\nSpatial analysis complete.')

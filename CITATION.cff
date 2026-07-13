@@ -7,20 +7,28 @@ abstract: >
   prediction of HIV-TB co-infection across Ghana's 261 administrative districts
   (post-2018 Local Governance Act). Combines spatial statistics (Moran's I, LISA,
   Gi*, GWR), geographically weighted regression, and ensemble machine learning
-  (RandomForest, XGBoost, LightGBM, Stacked). Dataset deduplicated (5 records
-  removed); Guan District added. Canonical statistics (seed=42, 261 districts):
-  Moran's I=0.810 (HIV-TB), Bivariate=0.449; GWR R²=0.916; LightGBM AUC=0.998
-  (LODO-CV). All 261 districts now have distinct, computed values.
+  (RandomForest, XGBoost, LightGBM, Stacked). Guan District (Oti Region) added,
+  sharing its parent Krachi East Municipal polygon for spatial-weight purposes
+  (no distinct legacy boundary exists; portfolio-standard structural-gap
+  convention). Canonical statistics (seed=42, 261 districts, recomputed
+  2026-07-12): global Moran's I=0.469 (HIV-TB co-infection), bivariate
+  Moran's I=0.526 (HIV x TB); 50 LISA High-High clusters, 48 bivariate
+  High-High clusters; GWR R²=0.917; LightGBM 10-fold CV AUC=0.998 (non-spatial,
+  IID folds). Spatial generalisation (leave-one-region-out CV, N=12 regional
+  folds) is materially lower and unstable: LightGBM AUC=0.798 +/- 0.250 -- the
+  large drop and SD reflect genuine spatial autocorrelation in district-level
+  health data, not a bug; the 10-fold number should not be read as the model's
+  out-of-region generalisation performance.
 authors:
   - family-names: Ghanem
     given-names: Valentine Golden
     orcid: "https://orcid.org/0009-0002-8332-0220"
     affiliation: "Ghana COCOBOD Cocoa Clinic, Accra, Ghana"
     email: valentineghanem@gmail.com
-version: "1.1.0"
-date-released: "2026-05-19"
+version: "1.2.0"
+date-released: "2026-07-12"
 license: MIT
-repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts"
+repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts"
 keywords:
   - HIV-TB co-infection
   - spatial epidemiology
@@ -40,4 +48,4 @@ references:
       - family-names: Ghanem
         given-names: Valentine Golden
     year: 2026
-    notes: "Target journals: IJID / BMC Infectious Diseases. Manuscript in preparation."
+    notes: "Target journal: Epidemiology and Infection. Manuscript in preparation."

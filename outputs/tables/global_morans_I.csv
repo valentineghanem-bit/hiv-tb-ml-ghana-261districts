@@ -1,12 +1,12 @@
 Variable,Moran's I,Expected I,z-score,p-value,Autocorrelation
-HIV_Prev_Total_pct,0.7727,-0.0039,21.536,0.001,Positive clustering
-TB_Incidence_per100k,0.6141,-0.0039,17.144,0.001,Positive clustering
-TB_HIV_CoInfection_pct,0.4683,-0.0039,13.224,0.001,Positive clustering
-ART_Coverage_pct,0.297,-0.0039,8.059,0.001,Positive clustering
-VCT_Uptake_pct,0.4978,-0.0039,13.367,0.001,Positive clustering
-Poverty_Intensity_pct,0.7289,-0.0039,20.236,0.001,Positive clustering
-Illiteracy_Rate_pct,0.8177,-0.0039,22.409,0.001,Positive clustering
-Uninsurance_Rate_pct,0.5211,-0.0039,14.409,0.001,Positive clustering
-Doctors_per10k,0.3668,-0.0039,10.235,0.001,Positive clustering
-Condom_Use_pct,0.8328,-0.0039,22.2,0.001,Positive clustering
-Ever_Tested_HIV_pct,0.858,-0.0039,23.77,0.001,Positive clustering
+HIV_Prev_Total_pct,0.772,-0.0038,22.035,0.001,Positive clustering
+TB_Incidence_per100k,0.6219,-0.0038,16.858,0.001,Positive clustering
+TB_HIV_CoInfection_pct,0.4693,-0.0038,12.681,0.001,Positive clustering
+ART_Coverage_pct,0.2974,-0.0038,8.22,0.001,Positive clustering
+VCT_Uptake_pct,0.4982,-0.0038,13.136,0.001,Positive clustering
+Poverty_Intensity_pct,0.7251,-0.0038,20.274,0.001,Positive clustering
+Illiteracy_Rate_pct,0.8018,-0.0038,21.73,0.001,Positive clustering
+Uninsurance_Rate_pct,0.5085,-0.0038,14.087,0.001,Positive clustering
+Doctors_per10k,0.3692,-0.0038,10.051,0.001,Positive clustering
+Condom_Use_pct,0.8318,-0.0038,23.346,0.001,Positive clustering
+Ever_Tested_HIV_pct,0.8581,-0.0038,23.063,0.001,Positive clustering

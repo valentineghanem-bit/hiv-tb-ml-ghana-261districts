@@ -9,3 +9,13 @@ venv/
 *.log
 
 *.docx
+manuscript/
+submission_package/
+task_plan.md
+findings.md
+progress.md
+AIPOCH_Learning_Log*.md
+QA_STATUS_*.md
+FLOW.md
+QUESTION.md
+outputs/figures/_qa_*.png

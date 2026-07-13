@@ -1,0 +1,16 @@
+QA_PASSED_2026-07-13
+
+Scope: repository-safe HIV-TB Ghana 260-district research artefacts.
+
+Checks completed:
+- Python tests: 31 passed.
+- Figure generator: all manuscript PNG figures regenerated at 300 DPI.
+- Figure transparency: all manuscript PNG figures verified as RGBA with transparent canvas corners.
+- Submission package: DOCX-only local deliverables generated; no markdown files remain in submission_package.
+- STROBE: recreated as a tabulated DOCX location checklist.
+- Tabulated outputs: sensitivity checks and QA/readiness outputs created as DOCX tables.
+- HI-EI visuals: dashboard and poster generated through the Bespoke HI-EI generator.
+
+Limitations:
+- DOCX visual render QA could not be completed because LibreOffice/soffice is not available in this local runtime.
+- Acceptance probability remains an editorial estimate, not a guarantee.
