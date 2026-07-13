@@ -130,7 +130,7 @@ def prepare_generator() -> None:
     src = CANONICAL_GENERATOR.read_text(encoding="utf-8")
     src = src.replace(
         "repo:'hiv-tb-ml-ghana-261districts', src:'hiv-tb-ml-ghana-261districts_dashboard.html'",
-        "repo:'hiv-tb-ml-ghana-260districts', srcPath:TMP+'/hiv-tb_regions_source.html'",
+        "repo:'hiv-tb-ml-ghana-261districts', srcPath:TMP+'/hiv-tb_regions_source.html'",
     )
     src = src.replace(
         "primary:'#6c3483', thrDefault:3,",
@@ -159,7 +159,7 @@ def prepare_generator() -> None:
 def patch_generated_html() -> None:
     for path in [TEMP_OUT / "dashboard.html", TEMP_OUT / "poster.html"]:
         text = path.read_text(encoding="utf-8")
-        text = text.replace("hiv-tb-ml-ghana-261districts", "hiv-tb-ml-ghana-260districts")
+        text = text.replace("hiv-tb-ml-ghana-260districts", "hiv-tb-ml-ghana-261districts")
         text = text.replace("HIVâ€“TB", "HIV-TB").replace("HIV–TB", "HIV-TB")
         path.write_text(text, encoding="utf-8")
 

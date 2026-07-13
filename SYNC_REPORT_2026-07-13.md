@@ -4,7 +4,7 @@ Repository-safe artefacts are aligned across README, CITATION, dashboard, poster
 
 Key synced values:
 
-- Repository slug: `hiv-tb-ml-ghana-260districts`
+- Repository slug: `hiv-tb-ml-ghana-261districts`
 - Spatial CV AUC: `0.798`
 - Random 10-fold CV AUC: `0.998`
 - Global Moran's I for TB-HIV co-infection: `0.469`

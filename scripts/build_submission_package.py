@@ -215,7 +215,7 @@ The paper is a district-level infectious-disease epidemiology study with direct 
 
 The manuscript uses aggregate district, regional and national indicators from Ghana Statistical Service, WHO/GHO and DHS-derived sources. The analysis combines global and local Moran's I, bivariate LISA, Getis-Ord Gi*, geographically weighted regression, Random Forest, XGBoost, LightGBM and SHAP interpretation. The limitations around DHS behavioural variables and the Guan shared-polygon convention are stated directly, rather than left for reviewers to infer.
 
-This manuscript is original, is not under consideration elsewhere and has not been published previously. The author has read and approved the submitted version. There are no conflicts of interest and no specific funding to declare. Code, master data and reproducible outputs are available at https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts.
+This manuscript is original, is not under consideration elsewhere and has not been published previously. The author has read and approved the submitted version. There are no conflicts of interest and no specific funding to declare. Code, master data and reproducible outputs are available at https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts.
 
 I used OpenAI Codex to help check consistency across the manuscript, data tables, dashboard and poster, and to help format the submission files. I reviewed and corrected the outputs and take responsibility for all submitted content.
 
@@ -239,7 +239,7 @@ def write_checklists() -> None:
 - AI declaration: included in manuscript and cover letter.
 - Visual companions: dashboard and poster regenerated through Bespoke HI-EI generator.
 - Sensitivity checks: structural/TB/system-only spatial CV and Guan/Krachi East shared-polygon check supplied in `outputs/tables/submission_sensitivity_checks.csv`.
-- Repository: aligned to https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts.
+- Repository: aligned to https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts.
 """
     write_simple_docx(PKG / "EI_Submission_Checklist.docx", checklist)
 
@@ -324,7 +324,7 @@ One sensitivity package has been added at `outputs/tables/submission_sensitivity
 
 Honest acceptance estimate for Epidemiology & Infection: 60-68%. A claim above 70% would need newer district-level behavioural/HIV inputs, or an editor who is especially receptive to ecological spatial-ML work.
 
-The visual artefacts were regenerated through the Bespoke HI-EI generator. They now carry the corrected numbers: spatial AUC 0.798, 50 LISA High-High districts, 48 bivariate High-High districts, GWR global R2 0.917 / mean local R2 0.854, and the actual 260districts repository slug.
+The visual artefacts were regenerated through the Bespoke HI-EI generator. They now carry the corrected numbers: spatial AUC 0.798, 50 LISA High-High districts, 48 bivariate High-High districts, GWR global R2 0.917 / mean local R2 0.854, and the canonical 261districts repository slug.
 """
     write_simple_docx(PKG / "Humanised_QA_Readiness_Note.docx", qa)
 

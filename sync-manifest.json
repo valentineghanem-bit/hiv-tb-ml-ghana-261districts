@@ -12,7 +12,7 @@
   "bivariate_lisa_high_high_districts": 48,
   "gwr_global_r2": 0.917,
   "gwr_mean_local_r2": 0.854,
-  "repository": "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts",
+  "repository": "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts",
   "reporting_guideline": "STROBE",
   "qa_status": "QA_PASSED_2026-07-13 with limitations recorded"
 }

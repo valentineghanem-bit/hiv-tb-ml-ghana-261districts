@@ -28,7 +28,7 @@ authors:
 version: "1.2.0"
 date-released: "2026-07-12"
 license: MIT
-repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts"
+repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts"
 keywords:
   - HIV-TB co-infection
   - spatial epidemiology

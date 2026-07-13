@@ -1,6 +1,6 @@
 ﻿# Spatial Distribution, Determinants, and Machine Learningâ€“Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts
 
-[![CI](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/actions/workflows/ci.yml/badge.svg)](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![R 4.3+](https://img.shields.io/badge/R-4.3+-blue.svg)](https://www.r-project.org/) [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--8332--0220-green.svg)](https://orcid.org/0009-0002-8332-0220)
+[![CI](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions/workflows/ci.yml/badge.svg)](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![R 4.3+](https://img.shields.io/badge/R-4.3+-blue.svg)](https://www.r-project.org/) [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--8332--0220-green.svg)](https://orcid.org/0009-0002-8332-0220)
 
 **Author:** Valentine Golden Ghanem | Ghana COCOBOD Cocoa Clinic, Accra, Ghana
 **ORCID:** [0009-0002-8332-0220](https://orcid.org/0009-0002-8332-0220)
@@ -82,7 +82,7 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 ## 6. Repository Structure
 
 ```
-hiv-tb-ml-ghana-260districts/
+hiv-tb-ml-ghana-261districts/
 â”œâ”€â”€ analysis/
 â”‚   â”œâ”€â”€ build_master_dataset.py     # Data integration pipeline
 â”‚   â”œâ”€â”€ spatial_analysis.py         # Moran's I, LISA, GWR, SEM
@@ -122,8 +122,8 @@ hiv-tb-ml-ghana-260districts/
 ### 7.2 Clone & install
 
 ```bash
-git clone https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts.git
-cd hiv-tb-ml-ghana-260districts
+git clone https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts.git
+cd hiv-tb-ml-ghana-261districts
 pip install -r requirements.txt
 ```
 
@@ -177,8 +177,8 @@ Both the interactive dashboard and the conference poster are committed as self-c
 
 | Artefact | View on GitHub | Live preview | Direct download (raw HTML) |
 |----------|---------------|--------------|---------------------------|
-| Interactive dashboard | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/main/dashboard/HIV_TB_Ghana_Dashboard.html) |
-| Conference poster | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) |
+| Interactive dashboard | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/dashboard/HIV_TB_Ghana_Dashboard.html) |
+| Conference poster | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) |
 
 > **Tip:** The dashboard works fully offline once downloaded. The poster is print-ready at A0 (841 Ã— 1189 mm).
 
@@ -199,7 +199,7 @@ This study analyses publicly released aggregate data from the Ghana Demographic 
 ## 11. Citation
 
 **APA:**
-Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learningâ€“Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts.* GitHub. https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts
+Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learningâ€“Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts.* GitHub. https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts
 
 **BibTeX:**
 ```bibtex
@@ -207,7 +207,7 @@ Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learning�
   author = {Ghanem, Valentine Golden},
   title  = {Spatial Distribution, Determinants, and Machine Learning--Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts},
   year   = {2026},
-  url    = {https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-260districts}
+  url    = {https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts}
 }
 ```
 
