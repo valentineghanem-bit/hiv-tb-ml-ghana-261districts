@@ -43,7 +43,7 @@ KPIS     = [
     ("31", "HH Co-cluster Dist.", "Southern belt"),
     ("0.916", "GWR R²", "Local spatial fit"),
     ("0.44", "SEM β Poverty→HIV", "p "),
-    ("260", "Districts", "All Ghana"),
+    ("261", "Districts", "All Ghana"),
 ]
 LISA   = {"HH": "#c0392b", "LL": "#2980b9", "HL": "#e67e22", "LH": "#82c0e8", "NS": "#bdc3c7"}
 LNAME  = {"HH": "High-High", "LL": "Low-Low", "HL": "High-Low", "LH": "Low-High", "NS": "Not sig."}
@@ -56,7 +56,7 @@ def load_geo():
 
 # ---------------- sidebar ----------------
 st.sidebar.title("HIV–TB · ML — Ghana")
-st.sidebar.caption("District HIV–TB co-burden, clusters & ML predictors · 260 districts")
+st.sidebar.caption("District HIV–TB co-burden, clusters & ML predictors · 261 districts")
 lisa_pick   = st.sidebar.multiselect("Filter by spatial cluster (LISA)", sorted(df.lisa.unique()), default=list(df.lisa.unique()))
 region_pick = st.sidebar.multiselect("Filter by region", df.region.tolist(), default=df.region.tolist())
 if HASX:
@@ -67,7 +67,7 @@ fdf = df[df.lisa.isin(lisa_pick) & df.region.isin(region_pick)]
 
 # ---------------- header + KPIs ----------------
 st.markdown("### " + "Machine-Learning Mapping of HIV–TB — Ghana")
-st.caption("District HIV–TB co-burden, clusters & ML predictors · 260 districts" + f"  ·  {len(fdf)} of {len(df)} regions in view")
+st.caption("District HIV–TB co-burden, clusters & ML predictors · 261 districts" + f"  ·  {len(fdf)} of {len(df)} regions in view")
 if KPIS:
     cols = st.columns(len(KPIS))
     for col, (kv, kl, ks) in zip(cols, KPIS):

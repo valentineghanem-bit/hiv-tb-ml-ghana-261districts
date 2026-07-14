@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+import zipfile
 from pathlib import Path
 
 import pandas as pd
@@ -17,6 +18,24 @@ PKG = ROOT / "submission_package"
 MANUSCRIPT_SRC = ROOT / "manuscript" / "HIV_TB_Ghana_261Districts_Manuscript_DRAFT.md"
 MANUSCRIPT_MD = PKG / "Ghanem_EI_Manuscript_Submission.md"
 MANUSCRIPT_DOCX = PKG / "Ghanem_EI_Manuscript_Submission.docx"
+
+
+def repair_docx_xml(path: Path) -> None:
+    """Repair minor python-docx XML issues that fail strict validation on Windows."""
+    tmp = path.with_suffix(".tmp.docx")
+    with zipfile.ZipFile(path, "r") as src, zipfile.ZipFile(tmp, "w", zipfile.ZIP_DEFLATED) as dst:
+        for item in src.infolist():
+            data = src.read(item.filename)
+            if item.filename == "word/settings.xml":
+                text = data.decode("utf-8")
+                text = text.replace('<w:zoom w:val="bestFit"/>', '<w:zoom w:val="bestFit" w:percent="100"/>')
+                data = text.encode("utf-8")
+            elif item.filename == "word/fontTable.xml":
+                text = data.decode("utf-8")
+                text = re.sub(r'\s*<w:font w:name="[^"]*[^\x00-\x7F][^"]*">.*?</w:font>', "", text, flags=re.S)
+                data = text.encode("utf-8")
+            dst.writestr(item, data)
+    tmp.replace(path)
 
 
 def read_manuscript() -> str:
@@ -37,9 +56,9 @@ def read_manuscript() -> str:
 
 
 def add_table_from_frame(doc: Document, df: pd.DataFrame, title: str) -> None:
-    doc.add_paragraph(title, style="Caption")
+    if title:
+        doc.add_paragraph(title, style="Caption")
     table = doc.add_table(rows=1, cols=len(df.columns))
-    table.style = "Table Grid"
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     for i, col in enumerate(df.columns):
         table.rows[0].cells[i].text = str(col)
@@ -63,9 +82,17 @@ def format_table(table) -> None:
                 paragraph.paragraph_format.line_spacing = 1.05
                 for run in paragraph.runs:
                     run.font.name = "Times New Roman"
-                    run.font.size = Pt(9)
+                    run.font.size = Pt(8.5)
                     if row_idx == 0:
                         run.bold = True
+
+
+def clean_numeric_table(df: pd.DataFrame, decimals: int = 3) -> pd.DataFrame:
+    out = df.copy()
+    for col in out.columns:
+        if pd.api.types.is_numeric_dtype(out[col]):
+            out[col] = out[col].round(decimals)
+    return out
 
 
 def write_simple_docx(path: Path, text: str) -> None:
@@ -88,6 +115,7 @@ def write_simple_docx(path: Path, text: str) -> None:
         else:
             doc.add_paragraph(line)
     doc.save(path)
+    repair_docx_xml(path)
 
 
 def write_table_docx(path: Path, title: str, intro: str, df: pd.DataFrame, footer: str = "") -> None:
@@ -107,20 +135,35 @@ def write_table_docx(path: Path, title: str, intro: str, df: pd.DataFrame, foote
         note = doc.add_paragraph(footer)
         note.runs[0].italic = True
     doc.save(path)
+    repair_docx_xml(path)
 
 
 def add_results_tables(doc: Document) -> None:
     moran = pd.read_csv(ROOT / "outputs" / "tables" / "global_morans_I.csv")
+    moran = clean_numeric_table(moran[["Variable", "Moran's I", "Expected I", "z-score", "p-value", "Autocorrelation"]])
     add_table_from_frame(doc, moran, "Table 1. Global Moran's I for district-level HIV, TB and system indicators.")
 
     gwr_global = pd.read_csv(ROOT / "outputs" / "tables" / "gwr_global_fit.csv")
     gwr_summary = pd.read_csv(ROOT / "outputs" / "tables" / "gwr_summary.csv")
-    add_table_from_frame(doc, gwr_global, "Table 2a. GWR global fit diagnostics.")
-    add_table_from_frame(doc, gwr_summary, "Table 2b. GWR coefficient summary.")
+    add_table_from_frame(doc, clean_numeric_table(gwr_global), "Table 2a. GWR global fit diagnostics.")
+    add_table_from_frame(doc, clean_numeric_table(gwr_summary), "Table 2b. GWR coefficient summary.")
 
     ml10 = pd.read_csv(ROOT / "outputs" / "tables" / "ml_10fold_cv_results.csv")
     mlsp = pd.read_csv(ROOT / "outputs" / "tables" / "ml_spatial_cv_results.csv")
     ml = ml10.merge(mlsp, on="Model", how="left")
+    ml = pd.DataFrame(
+        {
+            "Model": ml["Model"],
+            "10-fold AUC, mean (SD)": ml.apply(lambda r: f"{r['AUC_mean']:.3f} ({r['AUC_SD']:.3f})", axis=1),
+            "10-fold F1, mean (SD)": ml.apply(lambda r: f"{r['F1_mean']:.3f} ({r['F1_SD']:.3f})", axis=1),
+            "Accuracy": ml["Accuracy_mean"].map(lambda x: f"{x:.3f}"),
+            "Spatial-CV AUC, mean (SD)": ml.apply(
+                lambda r: "NA" if pd.isna(r["Spatial_CV_AUC_mean"]) else f"{r['Spatial_CV_AUC_mean']:.3f} ({r['Spatial_CV_AUC_SD']:.3f})",
+                axis=1,
+            ),
+            "Spatial folds": ml["N_folds"].fillna(0).astype(int).astype(str),
+        }
+    )
     add_table_from_frame(doc, ml, "Table 3. Machine-learning performance under random 10-fold and spatial cross-validation.")
 
     provenance = pd.DataFrame(
@@ -138,14 +181,14 @@ def add_results_tables(doc: Document) -> None:
 def add_figures(doc: Document) -> None:
     figures = [
         ("Figure 1. Disease burden choropleths.", "Figure_1_disease_burden.png"),
-        ("Figure 2. Global Moran's I scatterplots.", "Figure_3_morans_I.png"),
+        ("Figure 2. Ranked global Moran's I summary for tested indicators.", "Figure_3_morans_I.png"),
         ("Figure 3. LISA, bivariate LISA and Getis-Ord Gi* clusters.", "Figure_2_spatial_clusters.png"),
         ("Figure 4. GWR local coefficient maps.", "Figure_8_gwr_coefficients.png"),
-        ("Figure 5. ML model comparison: random 10-fold versus spatial CV.", "Figure_4_ml_performance.png"),
+        ("Figure 5. Model validation comparison: random 10-fold versus leave-one-region-out spatial CV.", "Figure_4_ml_performance.png"),
         ("Figure 6. SHAP feature importance.", "Figure_5_shap_importance.png"),
         ("Figure 6b. SHAP beeswarm.", "Figure_5b_shap_beeswarm.png"),
         ("Figure 7. Stacked-ensemble risk map.", "Figure_6_ml_risk_map.png"),
-        ("Figure 8. Predictor correlation matrix.", "Figure_7_correlation.png"),
+        ("Figure 8. Selected determinant correlation matrix.", "Figure_7_correlation.png"),
     ]
     for caption, file_name in figures:
         doc.add_paragraph(caption, style="Caption")
@@ -198,6 +241,7 @@ def md_to_docx(text: str) -> None:
             doc.add_paragraph(clean)
 
     doc.save(MANUSCRIPT_DOCX)
+    repair_docx_xml(MANUSCRIPT_DOCX)
 
 
 def write_cover_letter() -> None:
@@ -296,7 +340,7 @@ def write_checklists() -> None:
 
     qa_rows = [
         ["Scientific contribution", "New Ghana district-level HIV-TB spatial-ML synthesis; useful because it quantifies spatial over-optimism in random-fold ML.", "Strong"],
-        ["Core spatial result", "TB-HIV co-infection Moran's I = 0.469; 50 LISA High-High districts; 48 bivariate High-High districts.", "Strong"],
+        ["Core spatial result", "TB-HIV co-infection Moran's I = 0.472; 50 LISA High-High districts; 48 bivariate High-High districts.", "Strong"],
         ["Prediction claim", "Use leave-one-region-out spatial AUC 0.798 as the main validation result; random 10-fold AUC 0.998 is retained as a cautionary contrast.", "Defensible"],
         ["GWR result", "Global R2 = 0.917; mean local R2 = 0.854, with spatial non-stationarity stated clearly.", "Strong"],
         ["Sensitivity layer", "Removing DHS behavioural/HIV predictors lowers spatial AUC to 0.604-0.655 but leaves a structural/TB/system signal.", "Moderate"],
@@ -329,12 +373,35 @@ The visual artefacts were regenerated through the Bespoke HI-EI generator. They 
     write_simple_docx(PKG / "Humanised_QA_Readiness_Note.docx", qa)
 
 
+def write_claim_reference_audit() -> None:
+    audit_rows = pd.DataFrame(
+        [
+            ["Internal results", "Moran's I, LISA counts, GWR fit, ML AUCs, SHAP-leading predictors", "Verified against local output tables", "Pass"],
+            ["WHO TB burden", "TB incidence 126/100,000 and tested TB patients HIV-positive 12%", "Verified against local WHO GHO tuberculosis export, 2024 rows", "Pass"],
+            ["Ghana district frame", "261 district assemblies", "Verified against Ghana Statistical Service 2021 PHC source; Guan wording softened", "Pass after edit"],
+            ["Spatial CV literature", "28%, 47%, and 40% optimism/spatial-CV gaps", "Verified against full source pages/PDFs where available; [5] corrected to 2019 Ecological Modelling article", "Pass after edit"],
+            ["Comparator ML literature", "LightGBM AUC 0.771 and XGBoost AUC 0.797 / W4SS AUC 0.570", "[7] peer-reviewed; [8] body-verified but medRxiv preprint", "Pass with caveat"],
+            ["External benchmark claim", "0.79-0.80 as a fixed ceiling/no published model above 0.80", "Not supportable; replaced with contextual calibration wording", "Corrected"],
+            ["Reference validity", "20-item reference list", "All items traced as real and pertinent; [8] remains preprint-only", "Pass with caveat"],
+        ],
+        columns=["Area", "Claim or item checked", "Evidence basis", "Verdict"],
+    )
+    write_table_docx(
+        PKG / "Claim_Reference_Verification_Audit.docx",
+        "Claim and Reference Verification Audit",
+        "Body-level verification summary for the Epidemiology & Infection submission package. The audit separates local numerical reproducibility from external literature validity, because editors will judge those differently.",
+        audit_rows,
+        "Bottom line: the manuscript's core scientific claims are factual and pertinent after the edits. The main remaining limitation is not fabrication or citation validity; it is evidence strength, because one comparator ML study is a preprint and the DHS behavioural inputs are old/regional.",
+    )
+
+
 def main() -> None:
     PKG.mkdir(exist_ok=True)
     text = read_manuscript()
     md_to_docx(text)
     write_cover_letter()
     write_checklists()
+    write_claim_reference_audit()
     for markdown_file in PKG.glob("*.md"):
         markdown_file.unlink()
     print(f"Wrote {PKG}")

@@ -11,8 +11,8 @@ abstract: >
   sharing its parent Krachi East Municipal polygon for spatial-weight purposes
   (no distinct legacy boundary exists; portfolio-standard structural-gap
   convention). Canonical statistics (seed=42, 261 districts, recomputed
-  2026-07-12): global Moran's I=0.469 (HIV-TB co-infection), bivariate
-  Moran's I=0.526 (HIV x TB); 50 LISA High-High clusters, 48 bivariate
+  2026-07-14): global Moran's I=0.472 (HIV-TB co-infection), bivariate
+  Moran's I=0.525 (HIV x TB); 50 LISA High-High clusters, 48 bivariate
   High-High clusters; GWR R²=0.917; LightGBM 10-fold CV AUC=0.998 (non-spatial,
   IID folds). Spatial generalisation (leave-one-region-out CV, N=12 regional
   folds) is materially lower and unstable: LightGBM AUC=0.798 +/- 0.250 -- the

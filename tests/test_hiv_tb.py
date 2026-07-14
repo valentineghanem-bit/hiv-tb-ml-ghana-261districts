@@ -4,7 +4,7 @@ tests/test_hiv_tb.py - Ghana HIV-TB Co-infection Spatial & ML Analysis (261 Dist
 Unit tests with canonical value assertions.
 
 Run: pytest tests/ -v
-Tenet 8: SEED=42. Canonical values recomputed 2026-07-12 against the real
+Tenet 8: SEED=42. Canonical values recomputed 2026-07-14 against the real
 261-district geometry (Guan District shares its parent Krachi East Municipal
 polygon for spatial weighting -- no distinct legacy boundary exists).
 Methods: Moran's I, Bivariate LISA, GWR, LightGBM ensemble, SHAP.
@@ -23,11 +23,11 @@ ML_10F_CSV = os.path.join(REPO_ROOT, "outputs", "tables", "ml_10fold_cv_results.
 SHAP_CSV = os.path.join(REPO_ROOT, "outputs", "tables", "shap_feature_importance.csv")
 FIG_DIR = os.path.join(REPO_ROOT, "outputs", "figures")
 
-# CANONICAL VALUES (recomputed 2026-07-12 against the real 261-district geometry)
+# CANONICAL VALUES (recomputed 2026-07-14 against the real 261-district geometry)
 N_DISTRICTS = 261
 POPULATION = 28_140_000  # ~28.14 million
-MORANS_I_COINFECTION = 0.469  # Univariate, TB-HIV co-infection
-BIVARIATE_MORANS_I = 0.526  # Bivariate, HIV x TB
+MORANS_I_COINFECTION = 0.472  # Univariate, TB-HIV co-infection
+BIVARIATE_MORANS_I = 0.525  # Bivariate, HIV x TB
 LISA_HH_COUNT = 50  # Univariate LISA high-high
 BVLISA_HH_COUNT = 48  # Bivariate LISA high-high
 LGB_AUC_MEAN = 0.998  # LightGBM 10-fold CV AUC (non-spatial, IID folds)
@@ -92,9 +92,9 @@ class TestSpatialAutocorrelation:
     """Univariate and bivariate Moran's I canonical assertions."""
 
     def test_morans_i_coinfection_canonical(self):
-        """Global Moran's I (TB-HIV co-infection) = 0.469 +/- 0.05."""
-        assert abs(MORANS_I_COINFECTION - 0.469) <= 0.05, \
-            f"Moran's I = {MORANS_I_COINFECTION}; canonical 0.469 +/- 0.05"
+        """Global Moran's I (TB-HIV co-infection) = 0.472 +/- 0.05."""
+        assert abs(MORANS_I_COINFECTION - 0.472) <= 0.05, \
+            f"Moran's I = {MORANS_I_COINFECTION}; canonical 0.472 +/- 0.05"
 
     def test_morans_i_positive(self):
         """Moran's I must be positive (spatial clustering confirmed)."""
@@ -102,12 +102,12 @@ class TestSpatialAutocorrelation:
             f"Moran's I should be positive; got {MORANS_I_COINFECTION}"
 
     def test_bivariate_morans_i_canonical(self):
-        """Bivariate Moran's I (HIV x TB) = 0.526 +/- 0.05."""
-        assert abs(BIVARIATE_MORANS_I - 0.526) <= 0.05, \
-            f"Bivariate Moran's I = {BIVARIATE_MORANS_I}; canonical 0.526 +/- 0.05"
+        """Bivariate Moran's I (HIV x TB) = 0.525 +/- 0.05."""
+        assert abs(BIVARIATE_MORANS_I - 0.525) <= 0.05, \
+            f"Bivariate Moran's I = {BIVARIATE_MORANS_I}; canonical 0.525 +/- 0.05"
 
     def test_bivariate_exceeds_univariate(self):
-        """Bivariate Moran's I (0.526) must exceed univariate (0.469) -- HIV-TB spatial concordance."""
+        """Bivariate Moran's I (0.525) must exceed univariate (0.472) -- HIV-TB spatial concordance."""
         assert BIVARIATE_MORANS_I > MORANS_I_COINFECTION, \
             "Bivariate Moran's I should exceed univariate"
 

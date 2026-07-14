@@ -28,7 +28,7 @@ TEMP_GEO = TEMP / "ghana_districts_compact.geojson"
 TEMP_OUT = TEMP / "bespoke_v5" / "hiv-tb"
 
 DASHBOARD_OUT = ROOT / "dashboard" / "HIV_TB_Ghana_Dashboard.html"
-POSTER_OUT = ROOT / "poster" / "HIV_TB_Ghana_260_Districts_Poster.html"
+POSTER_OUT = ROOT / "poster" / "HIV_TB_Ghana_261_Districts_Poster.html"
 
 FULL_TO_SHORT = {
     "GREATER ACCRA": "Gr.Accra",
@@ -160,7 +160,7 @@ def patch_generated_html() -> None:
     for path in [TEMP_OUT / "dashboard.html", TEMP_OUT / "poster.html"]:
         text = path.read_text(encoding="utf-8")
         text = text.replace("hiv-tb-ml-ghana-260districts", "hiv-tb-ml-ghana-261districts")
-        text = text.replace("HIVâ€“TB", "HIV-TB").replace("HIV–TB", "HIV-TB")
+        text = text.replace("HIV-TB", "HIV-TB").replace("HIV–TB", "HIV-TB")
         path.write_text(text, encoding="utf-8")
 
 

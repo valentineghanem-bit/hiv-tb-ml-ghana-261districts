@@ -124,7 +124,7 @@ print(gdf['BvLISA_cluster'].value_counts())
 # 5. GETIS-ORD Gi* — HIV-TB co-infection hotspots
 # ============================================================
 print('\n[5/6] Getis-Ord Gi* hotspot analysis...')
-g = G_Local(y_coin, W_rook, transform='r', permutations=999, seed=42)
+g = G_Local(y_coin, W_rook, transform='r', permutations=999, seed=42, n_jobs=1)
 gdf['Gi_z'] = g.Zs
 gdf['Gi_p'] = g.p_sim
 gdf['Gi_cluster'] = 'Not Significant'

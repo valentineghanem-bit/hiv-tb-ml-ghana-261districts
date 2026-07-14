@@ -1,5 +1,5 @@
 """
-Publication Figures — HIV-TB Co-infection Ghana 261 Districts
+Publication Figures - HIV-TB Co-infection Ghana 261 Districts
 ==============================================================
 Generates 8 publication-ready figures at 300 DPI
 """
@@ -23,8 +23,8 @@ FIG.mkdir(parents=True, exist_ok=True)
 
 # Style
 plt.rcParams.update({
- 'font.family': 'DejaVu Serif',
- 'font.size': 11,
+ 'font.family': 'Arial',
+ 'font.size': 9,
  'axes.spines.top': False,
  'axes.spines.right': False,
  'figure.facecolor': 'none',
@@ -35,8 +35,8 @@ plt.rcParams.update({
  'savefig.facecolor': 'none',
  'savefig.edgecolor': 'none',
 })
-TITLE_KW = dict(fontsize=13, fontweight='bold', color='#000', pad=12)
-CAP_KW = dict(ha='center', fontsize=12, style='italic', color='#333333')
+TITLE_KW = dict(fontsize=11, fontweight='bold', color='#000000', pad=9)
+CAP_KW = dict(ha='center', fontsize=9, style='italic', color='#333333')
 
 GHANA_UTM_EPSG = 32630  # UTM Zone 30N -- metres, correct for scale bars/bearings over Ghana
 
@@ -58,7 +58,7 @@ def add_map_essentials(ax, source_note=None):
  ax.add_artist(ScaleBar(
   1, units='m', dimension='si-length', location='lower right',
   box_alpha=0.75, color='#1a1a1a', box_color='white',
-  font_properties={'size': 8}, scale_loc='top', border_pad=0.5, pad=0.4,
+  font_properties={'size': 7.5}, scale_loc='top', border_pad=0.5, pad=0.4,
  ))
 
  # North arrow -- upper right, inside the frame.
@@ -69,15 +69,48 @@ def add_map_essentials(ax, source_note=None):
  ax.text(x, y1 + 0.015, 'N', transform=ax.transAxes, ha='center', va='bottom',
   fontsize=11, fontweight='bold', color='#1a1a1a')
 
- # Optional small source/CRS text box -- bottom edge, clear of the scale bar.
+ # Optional small source/CRS text box. Placed just below the neatline frame
+ # (outside the axes, in the figure margin) rather than inside the map extent:
+ # Ghana's outline reaches every corner of the plotted bounding box depending on
+ # which districts are coloured for a given variable, so an in-map corner is not
+ # a reliably empty position and previously obscured real choropleth data.
  if source_note:
-  ax.text(0.02, 0.02, source_note, transform=ax.transAxes, ha='left', va='bottom',
-  fontsize=7.5, color='#333333', style='italic',
+  ax.text(0.0, -0.045, source_note, transform=ax.transAxes, ha='left', va='top',
+  fontsize=7.5, color='#333333', style='italic', clip_on=False,
   bbox=dict(boxstyle='round,pad=0.25', facecolor='white', edgecolor='#999999',
-  linewidth=0.5, alpha=0.8))
+  linewidth=0.5, alpha=1.0))
 
 
 MAP_SOURCE_NOTE = 'Ghana LGA post-2018\n261 districts\nCRS: UTM Zone 30N'
+
+
+LABEL_MAP = {
+ 'HIV_Prev_Total_pct': 'HIV prevalence (total)',
+ 'HIV_Prev_Women_pct': 'HIV prevalence (women)',
+ 'HIV_Prev_Men_pct': 'HIV prevalence (men)',
+ 'HIV_Awareness_Women_pct': 'HIV awareness',
+ 'Condom_Use_pct': 'Condom use',
+ 'High_Risk_Sex_pct': 'High-risk sex',
+ 'Ever_Tested_HIV_pct': 'Ever tested for HIV',
+ 'Know_Where_Test_pct': 'Knows where to test',
+ 'Accepting_Attitudes_pct': 'Accepting attitudes',
+ 'Poverty_Incidence_pct': 'Poverty incidence',
+ 'Poverty_Intensity_pct': 'Poverty intensity',
+ 'Unemployment_Rate_pct': 'Unemployment rate',
+ 'Illiteracy_Rate_pct': 'Illiteracy rate',
+ 'Uninsurance_Rate_pct': 'Uninsurance rate',
+ 'Youth_Dependency_Ratio': 'Youth dependency',
+ 'Sex_Ratio_15_64': 'Sex ratio (15-64)',
+ 'Sexually_Active_Pop_pct': 'Sexually active population',
+ 'TB_Incidence_per100k': 'TB incidence (/100k)',
+ 'TB_HIV_CoInfection_pct': 'TB-HIV co-infection',
+ 'ART_Coverage_pct': 'ART coverage',
+ 'VCT_Uptake_pct': 'VCT uptake',
+ 'Doctors_per10k': 'Doctors / 10,000',
+ 'Nurses_per10k': 'Nurses / 10,000',
+ 'OOP_Expenditure_pct': 'OOP expenditure',
+ 'TB_Treatment_Success_pct': 'TB treatment success',
+}
 
 
 def save_transparent_figure(fig, filename, **kwargs):
@@ -104,10 +137,10 @@ gdf = gdf.to_crs(GHANA_UTM_EPSG)  # project to metres so bearings/scale bars are
 print(f'Loaded: {len(gdf)} districts')
 
 # ============================================================
-# FIGURE 1 — Study Area & Disease Burden Choropleths (2×2)
+# FIGURE 1 - Study Area & Disease Burden Choropleths (2x2)
 # ============================================================
 print('[1/8] Fig 1: Disease burden choropleths...')
-fig, axes = plt.subplots(2, 2, figsize=(8.5, 8.8))
+fig, axes = plt.subplots(2, 2, figsize=(9.2, 9.0))
 panels = [
  ('HIV_Prev_Total_pct', 'A. HIV Prevalence (%)', 'OrRd'),
  ('TB_Incidence_per100k', 'B. TB Incidence (per 100,000)', 'YlOrBr'),
@@ -120,12 +153,15 @@ for i, (ax, (var, title, cmap)) in enumerate(zip(axes.flat, panels)):
  ax.set_title(title, **TITLE_KW)
  add_map_essentials(ax, source_note=MAP_SOURCE_NOTE if i == 0 else None)
 plt.tight_layout(rect=[0, 0.04, 1, 1])
-add_caption(fig, 'Figure 1. Spatial distribution of HIV prevalence, TB incidence, TB-HIV co-infection, and ART coverage across 261 districts in Ghana.')
+# Caption intentionally not baked into the image: the manuscript build script
+# (build_manuscript.js) supplies the numbered caption as editable docx text,
+# per journal convention. Baking a second, differently-worded caption into the
+# pixels produced duplicate/divergent captions in the submitted document.
 save_transparent_figure(fig, 'Figure_1_disease_burden.png')
 plt.close()
 
 # ============================================================
-# FIGURE 2 — LISA & Getis-Ord Hotspot Maps
+# FIGURE 2 - LISA & Getis-Ord Hotspot Maps
 # ============================================================
 print('[2/8] Fig 2: LISA + Getis-Ord...')
 fig, axes = plt.subplots(2, 2, figsize=(8.5, 8.8))
@@ -142,14 +178,16 @@ for cluster, color in lisa_cmap.items():
   sub.plot(ax=ax, color=color, edgecolor='white', linewidth=0.2)
   legend_patches.append(mpatches.Patch(facecolor=color, edgecolor='#888888',
   label=f'{cluster} (n={len(sub)})'))
-ax.set_title('A. LISA Cluster Map — TB-HIV Co-infection', **TITLE_KW)
+ax.set_title('A. LISA cluster: TB-HIV co-infection', **TITLE_KW)
 # geopandas polygon plots build a PatchCollection, which matplotlib's ax.legend()
 # cannot auto-derive handles for (silently produces an empty legend box) -- use
 # explicit proxy Patch handles instead.
-ax.legend(handles=legend_patches, loc='lower left', fontsize=9, frameon=True)
+ax.legend(handles=legend_patches, loc='upper center', bbox_to_anchor=(0.5, -0.02),
+ fontsize=7.1, frameon=False, ncol=2, columnspacing=0.7,
+ labelspacing=0.25, handlelength=1.2)
 add_map_essentials(ax)
 
-# Panel B: Bivariate LISA (HIV × TB)
+# Panel B: Bivariate LISA (HIV x TB)
 ax = axes[0, 1]
 legend_patches = []
 for cluster, color in lisa_cmap.items():
@@ -158,8 +196,10 @@ for cluster, color in lisa_cmap.items():
   sub.plot(ax=ax, color=color, edgecolor='white', linewidth=0.2)
   legend_patches.append(mpatches.Patch(facecolor=color, edgecolor='#888888',
   label=f'{cluster} (n={len(sub)})'))
-ax.set_title('B. Bivariate LISA — HIV × TB', **TITLE_KW)
-ax.legend(handles=legend_patches, loc='lower left', fontsize=9, frameon=True)
+ax.set_title('B. Bivariate LISA: HIV x TB', **TITLE_KW)
+ax.legend(handles=legend_patches, loc='upper center', bbox_to_anchor=(0.5, -0.02),
+ fontsize=7.1, frameon=False, ncol=2, columnspacing=0.7,
+ labelspacing=0.25, handlelength=1.2)
 add_map_essentials(ax)
 
 # Panel C: Getis-Ord Gi*
@@ -174,102 +214,100 @@ for cluster, color in gi_cmap.items():
   sub.plot(ax=ax, color=color, edgecolor='white', linewidth=0.2)
   legend_patches.append(mpatches.Patch(facecolor=color, edgecolor='#888888',
   label=f'{cluster} (n={len(sub)})'))
-ax.set_title('C. Getis-Ord Gi* Hotspots', **TITLE_KW)
-ax.legend(handles=legend_patches, loc='lower left', fontsize=9, frameon=True)
+ax.set_title('C. Getis-Ord Gi* hotspots', **TITLE_KW)
+ax.legend(handles=legend_patches, loc='upper center', bbox_to_anchor=(0.5, -0.02),
+ fontsize=7.1, frameon=False, ncol=1, labelspacing=0.25, handlelength=1.2)
 add_map_essentials(ax)
 
-# Panel D: GWR local R²
+# Panel D: GWR local R^2
 ax = axes[1, 1]
 if 'GWR_local_R2' in gdf.columns:
  gdf.plot(column='GWR_local_R2', cmap='viridis', legend=True, ax=ax,
  edgecolor='white', linewidth=0.2, legend_kwds={'shrink': 0.6})
- ax.set_title('D. GWR Local R² (Model Fit)', **TITLE_KW)
+ ax.set_title('D. GWR local R^2', **TITLE_KW)
  add_map_essentials(ax)
 else:
  ax.axis('off')
 
-plt.tight_layout(rect=[0, 0.04, 1, 1])
-add_caption(fig, 'Figure 2. Spatial cluster analyses. A: Univariate LISA for TB-HIV co-infection; B: bivariate LISA (HIV x TB); C: Getis-Ord Gi* hotspots; D: GWR local R2 showing spatial non-stationarity.')
+plt.tight_layout(rect=[0, 0.03, 1, 1], h_pad=3.0, w_pad=2.0)
 save_transparent_figure(fig, 'Figure_2_spatial_clusters.png')
 plt.close()
 
 # ============================================================
-# FIGURE 3 — Global Moran's I bar plot with significance
+# FIGURE 3 - Global Moran's I bar plot with significance
 # ============================================================
 print('[3/8] Fig 3: Global Moran\'s I...')
 moran_df = pd.read_csv(OUT / 'tables' / 'global_morans_I.csv')
+moran_df['Label'] = moran_df['Variable'].map(lambda v: LABEL_MAP.get(v, v.replace('_', ' ')))
 moran_df = moran_df.sort_values("Moran's I", ascending=True)
-fig, ax = plt.subplots(figsize=(7.8, 5.2))
+fig, ax = plt.subplots(figsize=(7.8, 5.6))
 colors = ['#d7191c' if p < 0.001 else ('#fdae61' if p < 0.05 else '#bdbdbd')
  for p in moran_df['p-value']]
-bars = ax.barh(moran_df['Variable'], moran_df["Moran's I"], color=colors,
+bars = ax.barh(moran_df['Label'], moran_df["Moran's I"], color=colors,
  edgecolor='black', linewidth=0.5)
 morans_col = "Moran's I"
 for bar, (_, row) in zip(bars, moran_df.iterrows()):
  i_val = row[morans_col]
  p_val = row['p-value']
- ax.text(i_val + 0.01, bar.get_y() + bar.get_height()/2,
+ ax.text(i_val + 0.012, bar.get_y() + bar.get_height()/2,
  'I={:.3f} (p={:.3f})'.format(i_val, p_val),
- va='center', fontsize=9)
-ax.set_xlabel("Global Moran's I", fontsize=12, fontweight='semibold')
-ax.set_title("Global Moran's I — Spatial Autocorrelation Across Key Indicators", **TITLE_KW)
+ va='center', fontsize=7.8)
+ax.set_xlabel("Global Moran's I", fontsize=10, fontweight='semibold')
+ax.set_title("All tested indicators show positive spatial clustering", **TITLE_KW)
 ax.axvline(0, color='black', linestyle='-', linewidth=0.5)
 ax.set_xlim(-0.1, 1.0)
+ax.tick_params(axis='y', labelsize=8.4)
+ax.grid(axis='x', color='#e6e6e6', linewidth=0.6)
 plt.tight_layout(rect=[0, 0.06, 1, 1])
-add_caption(fig, "Figure 3. Global Moran's I values across 11 HIV, TB, and socioeconomic indicators (KNN-5 weight matrix, 999 permutations).")
 save_transparent_figure(fig, 'Figure_3_morans_I.png')
 plt.close()
 
 # ============================================================
-# FIGURE 4 — ML Model Comparison (ROC + Performance bar)
+# FIGURE 4 - ML Model Comparison (ROC + Performance bar)
 # ============================================================
 print('[4/8] Fig 4: ML comparison...')
 perf = pd.read_csv(OUT / 'tables' / 'ml_test_set_performance.csv')
 cv = pd.read_csv(OUT / 'tables' / 'ml_10fold_cv_results.csv')
 spatial_cv = pd.read_csv(OUT / 'tables' / 'ml_spatial_cv_results.csv')
 
-fig, axes = plt.subplots(1, 2, figsize=(8.5, 4.8))
-
-# Panel A: CV AUC with error bars
-ax = axes[0]
-x = np.arange(len(cv))
-ax.bar(x, cv['AUC_mean'], yerr=cv['AUC_SD'], capsize=5,
- color=['#3182bd', '#e6550d', '#31a354', '#756bb1'][:len(cv)],
- edgecolor='black', linewidth=0.6)
-for i, (_, row) in enumerate(cv.iterrows()):
- ax.text(i, row['AUC_mean'] + 0.02, f"{row['AUC_mean']:.3f}",
- ha='center', fontsize=10, fontweight='bold')
-ax.set_xticks(x)
-ax.set_xticklabels(cv['Model'], rotation=15, ha='right')
-ax.set_ylim(0.7, 1.05)
-ax.set_ylabel('AUC-ROC (mean ± SD)', fontsize=12, fontweight='semibold')
-ax.set_title('A. Random 10-fold CV', **TITLE_KW)
-ax.axhline(0.5, color='red', linestyle=':', linewidth=1, alpha=0.5, label='Random')
-
-# Panel B: Spatial (leave-one-region-out) CV AUC with error bars -- directly comparable to Panel A
-ax = axes[1]
-sp = spatial_cv.dropna(subset=['Spatial_CV_AUC_mean']).reset_index(drop=True)
-x = np.arange(len(sp))
-ax.bar(x, sp['Spatial_CV_AUC_mean'], yerr=sp['Spatial_CV_AUC_SD'], capsize=5,
- color=['#3182bd', '#e6550d', '#31a354', '#756bb1'][:len(sp)],
- edgecolor='black', linewidth=0.6)
-for i, (_, row) in enumerate(sp.iterrows()):
- ax.text(i, row['Spatial_CV_AUC_mean'] + row['Spatial_CV_AUC_SD'] + 0.02,
- f"{row['Spatial_CV_AUC_mean']:.3f}", ha='center', fontsize=10, fontweight='bold')
-ax.set_xticks(x)
-ax.set_xticklabels(sp['Model'], rotation=15, ha='right')
-ax.set_ylim(0.0, 1.05)
-ax.set_ylabel('AUC-ROC (mean ± SD)', fontsize=12, fontweight='semibold')
-ax.set_title('B. Spatial CV (12 regional folds)', **TITLE_KW)
-ax.axhline(0.5, color='red', linestyle=':', linewidth=1, alpha=0.5, label='Random')
-
-plt.tight_layout(rect=[0, 0.13, 1, 1])
-add_caption(fig, 'Figure 4. ML model performance. A: 10-fold stratified CV AUC with SD error bars. B: leave-one-region-out spatial CV AUC with SD error bars across 12 regional folds. Spatial CV is the honest generalisation estimate.', width=100)
+fig, ax = plt.subplots(figsize=(7.8, 4.8))
+sp = spatial_cv.dropna(subset=['Spatial_CV_AUC_mean']).copy()
+plot_df = cv.merge(sp, on='Model', how='inner')
+plot_df = plot_df.sort_values('Spatial_CV_AUC_mean', ascending=True).reset_index(drop=True)
+y = np.arange(len(plot_df))
+for i, row in plot_df.iterrows():
+ ax.plot([row['Spatial_CV_AUC_mean'], row['AUC_mean']], [i, i],
+  color='#bdbdbd', linewidth=1.5, zorder=1)
+ ax.errorbar(row['Spatial_CV_AUC_mean'], i, xerr=row['Spatial_CV_AUC_SD'],
+  fmt='o', color='#d55e00', ecolor='#d55e00', elinewidth=1.1, capsize=3,
+  markersize=5.5, label='Spatial CV' if i == 0 else '', zorder=3)
+ ax.plot(row['AUC_mean'], i, 'o', color='#0072b2', markersize=5.5,
+  label='Random 10-fold CV' if i == 0 else '', zorder=4)
+ ax.text(row['AUC_mean'] + 0.006, i + 0.08, f"{row['AUC_mean']:.3f}",
+  fontsize=7.8, color='#0072b2')
+ spatial_label_y = i + 0.18 if i < len(plot_df) - 1 else i - 0.18
+ ax.text(row['Spatial_CV_AUC_mean'], spatial_label_y,
+  f"{row['Spatial_CV_AUC_mean']:.3f}", fontsize=7.8, color='#8c3b00',
+  ha='center')
+ax.axvline(0.5, color='#666666', linestyle=':', linewidth=1)
+ax.set_yticks(y)
+ax.set_yticklabels(plot_df['Model'], fontsize=8.8)
+ax.set_xlim(0.45, 1.04)
+ax.set_ylim(-0.35, len(plot_df) - 0.55)
+ax.set_xlabel('AUC-ROC (mean; spatial CV shown with +/- SD)', fontsize=10, fontweight='semibold')
+ax.set_title('Spatial validation exposes random-fold optimism', **TITLE_KW)
+# 'lower right' previously sat directly on top of the bottom row's data point and
+# value label (Random Forest, the lowest spatial-CV model after ascending sort).
+# 'upper left' falls in the low-AUC region near the y=0.5 reference line, which is
+# empty of data points/labels for every model at every row.
+ax.legend(loc='upper left', frameon=False, fontsize=8.4)
+ax.grid(axis='x', color='#e6e6e6', linewidth=0.6)
+plt.tight_layout(rect=[0, 0.05, 1, 0.94])
 save_transparent_figure(fig, 'Figure_4_ml_performance.png')
 plt.close()
 
 # ============================================================
-# FIGURE 5 — SHAP Summary Plot
+# FIGURE 5 - SHAP Summary Plot
 # ============================================================
 print('[5/8] Fig 5: SHAP importance + summary...')
 shap_vals = np.load(OUT / 'models' / 'shap_values.npy')
@@ -278,7 +316,7 @@ shap_imp = pd.read_csv(OUT / 'tables' / 'shap_feature_importance.csv')
 features = shap_imp['Feature'].tolist()
 
 # Clean labels
-LABEL_MAP = {
+LABEL_MAP.update({
  'HIV_Prev_Total_pct': 'HIV Prevalence (Total)',
  'HIV_Prev_Women_pct': 'HIV Prevalence (Women)',
  'HIV_Prev_Men_pct': 'HIV Prevalence (Men)',
@@ -303,22 +341,25 @@ LABEL_MAP = {
  'Nurses_per10k': 'Nurses / 10,000',
  'OOP_Expenditure_pct': 'OOP Expenditure',
  'TB_Treatment_Success_pct': 'TB Treatment Success',
-}
+})
 
-# SHAP summary bar plot (top 15)
-fig, ax = plt.subplots(figsize=(7.8, 6.0))
-top15 = shap_imp.head(15).iloc[::-1]
-colors_grad = plt.cm.Blues(np.linspace(0.4, 0.9, len(top15)))
-bars = ax.barh([LABEL_MAP.get(f, f) for f in top15['Feature']], top15['Mean_abs_SHAP'],
- color=colors_grad, edgecolor='black', linewidth=0.5)
-for bar, val in zip(bars, top15['Mean_abs_SHAP']):
- ax.text(val + 0.03, bar.get_y() + bar.get_height()/2,
- f'{val:.3f}', va='center', fontsize=10)
-ax.set_xlabel('Mean |SHAP value|', fontsize=13, fontweight='semibold', labelpad=8)
-ax.set_title('Top 15 Feature Importance (LightGBM)', **TITLE_KW)
-ax.tick_params(axis='y', labelsize=12)
-plt.tight_layout(rect=[0, 0.05, 1, 1])
-add_caption(fig, 'Figure 5. SHAP-derived mean absolute feature importance for HIV-TB co-infection hotspot prediction (LightGBM model, test set).', y=0.018)
+# SHAP importance lollipop (top 12): clearer in print than dense bars.
+fig, ax = plt.subplots(figsize=(7.4, 5.6))
+top12 = shap_imp.head(12).iloc[::-1].reset_index(drop=True)
+y = np.arange(len(top12))
+vals = top12['Mean_abs_SHAP'].to_numpy()
+labels = [LABEL_MAP.get(f, f) for f in top12['Feature']]
+ax.hlines(y, 0, vals, color='#c7dcef', linewidth=2.2)
+ax.scatter(vals, y, s=42, color='#2166ac', edgecolor='black', linewidth=0.35, zorder=3)
+for yi, val in zip(y, vals):
+ ax.text(val + 0.045, yi, f'{val:.2f}', va='center', fontsize=8.2)
+ax.set_yticks(y)
+ax.set_yticklabels(labels, fontsize=8.6)
+ax.set_xlabel('Mean |SHAP value|', fontsize=10, fontweight='semibold', labelpad=8)
+ax.set_title('HIV prevalence and VCT dominate LightGBM predictions', **TITLE_KW)
+ax.set_xlim(0, max(vals) * 1.18)
+ax.grid(axis='x', color='#e6e6e6', linewidth=0.6)
+plt.tight_layout(rect=[0, 0.05, 1, 0.94])
 save_transparent_figure(fig, 'Figure_5_shap_importance.png')
 plt.close()
 
@@ -329,14 +370,14 @@ shap_top = shap_vals[:, top10_idx]
 X_top = X_test_arr[:, top10_idx]
 top_labels = [LABEL_MAP.get(f, f) for f in shap_imp['Feature'].head(10)]
 shap.summary_plot(shap_top, X_top, feature_names=top_labels, show=False, max_display=10)
-plt.title('SHAP Summary — Directional Impact on Hotspot Probability', fontsize=13,
+plt.title('SHAP Summary - Directional Impact on Hotspot Probability', fontsize=11,
  fontweight='bold', pad=10)
 plt.tight_layout()
 save_transparent_figure(fig, 'Figure_5b_shap_beeswarm.png', bbox_inches='tight')
 plt.close()
 
 # ============================================================
-# FIGURE 6 — ML Risk Prediction Map
+# FIGURE 6 - ML Risk Prediction Map
 # ============================================================
 print('[6/8] Fig 6: Ensemble risk map...')
 fig, axes = plt.subplots(1, 2, figsize=(8.5, 5.4))
@@ -348,79 +389,94 @@ ax.set_title('A. Ensemble-Predicted Hotspot Risk', **TITLE_KW)
 add_map_essentials(ax, source_note=MAP_SOURCE_NOTE)
 
 ax = axes[1]
-# Top 20 high-risk districts
+# Top 20 high-risk districts. Scores are tightly clustered, so a lollipop plot
+# communicates rank better than a 0-based bar chart.
 top20 = gdf.nlargest(20, 'Ensemble_Risk_Score')[['District', 'REGION', 'Ensemble_Risk_Score']]
 y_pos = np.arange(len(top20))
-bars = ax.barh(y_pos, top20['Ensemble_Risk_Score'],
- color=plt.cm.Reds(top20['Ensemble_Risk_Score']),
- edgecolor='black', linewidth=0.4)
+region_colors = {
+ 'EASTERN': '#6c3483',
+ 'WESTERN': '#117a65',
+ 'WESTERN NORTH': '#1a5276',
+ 'UPPER WEST': '#b9770e',
+}
+x_min = max(0, top20['Ensemble_Risk_Score'].min() - 0.006)
+for i, (_, row) in enumerate(top20.iterrows()):
+ color = region_colors.get(str(row['REGION']).upper(), '#555555')
+ ax.hlines(i, x_min, row['Ensemble_Risk_Score'], color='#bdbdbd', linewidth=1.1)
+ ax.plot(row['Ensemble_Risk_Score'], i, 'o', color=color, markersize=5.5,
+ markeredgecolor='black', markeredgewidth=0.35)
 for i, (_, row) in enumerate(top20.iterrows()):
  ax.text(row['Ensemble_Risk_Score'] + 0.005,
  i,
- f' ({row["REGION"]})',
- va='center', fontsize=9, color='#555')
+ f" {row['Ensemble_Risk_Score']:.3f} ({row['REGION']})",
+ va='center', fontsize=7.7, color='#333333')
 ax.set_yticks(y_pos)
-ax.set_yticklabels(top20['District'], fontsize=10)
+ax.set_yticklabels(top20['District'], fontsize=8.2)
 ax.invert_yaxis()
-ax.set_xlabel('Ensemble Hotspot Probability', fontsize=12, fontweight='semibold')
+ax.set_xlabel('Ensemble Hotspot Probability', fontsize=10, fontweight='semibold')
 ax.set_title('B. Top 20 High-Risk Districts', **TITLE_KW)
-ax.set_xlim(0, 1.05)
+ax.set_xlim(x_min, min(1.01, top20['Ensemble_Risk_Score'].max() + 0.045))
+ax.grid(axis='x', color='#d9d9d9', linewidth=0.6)
 
 plt.tight_layout(rect=[0, 0.04, 1, 1])
-add_caption(fig, 'Figure 6. Machine-learning-derived HIV-TB co-infection hotspot risk. A: ensemble-averaged district-level risk map. B: top-20 predicted high-risk districts.')
 save_transparent_figure(fig, 'Figure_6_ml_risk_map.png')
 plt.close()
 
 # ============================================================
-# FIGURE 7 — Correlation Matrix (FULL, no masking)
+# FIGURE 7 - Correlation Matrix (FULL, no masking)
 # ============================================================
 print('[7/8] Fig 7: Correlation matrix...')
 corr_vars = [
  'HIV_Prev_Total_pct', 'TB_Incidence_per100k', 'TB_HIV_CoInfection_pct',
- 'ART_Coverage_pct', 'VCT_Uptake_pct',
- 'Condom_Use_pct', 'Ever_Tested_HIV_pct', 'HIV_Awareness_Women_pct',
+ 'VCT_Uptake_pct', 'ART_Coverage_pct',
  'Poverty_Incidence_pct', 'Poverty_Intensity_pct',
- 'Unemployment_Rate_pct', 'Illiteracy_Rate_pct', 'Uninsurance_Rate_pct',
+ 'Illiteracy_Rate_pct', 'Uninsurance_Rate_pct',
  'Doctors_per10k', 'Nurses_per10k', 'OOP_Expenditure_pct',
- 'Youth_Dependency_Ratio', 'Sexually_Active_Pop_pct',
- 'TB_Treatment_Success_pct',
 ]
 corr = gdf[corr_vars].corr()
 short_labels = [LABEL_MAP.get(v, v) for v in corr_vars]
 corr.columns = short_labels
 corr.index = short_labels
 
-fig, ax = plt.subplots(figsize=(8.0, 7.4))
+fig, ax = plt.subplots(figsize=(8.2, 7.4))
 cmap = LinearSegmentedColormap.from_list('rdbu', ['#2166ac', '#f7f7f7', '#b2182b'])
-sns.heatmap(corr, annot=True, fmt='.2f', cmap=cmap, center=0,
- vmin=-1, vmax=1, linewidths=0.4, cbar_kws={'shrink': 0.7},
- annot_kws={'size': 8.5}, square=True, ax=ax)
-ax.set_title(f'Pearson Correlation Matrix ({len(gdf)} Districts, All {len(corr_vars)} Key Variables)',
+sns.heatmap(corr, annot=False, cmap=cmap, center=0, vmin=-1, vmax=1,
+ linewidths=0.35, linecolor='white', square=True,
+ cbar_kws={'shrink': 0.72, 'label': 'Pearson r', 'pad': 0.025}, ax=ax)
+for row_i, row_name in enumerate(corr.index):
+ for col_i, col_name in enumerate(corr.columns):
+  val = corr.loc[row_name, col_name]
+  text_color = 'white' if abs(val) >= 0.58 else '#111111'
+  ax.text(col_i + 0.5, row_i + 0.5, f'{val:.2f}',
+   ha='center', va='center', fontsize=5.9, color=text_color)
+ax.set_title(f'Selected determinant correlations ({len(gdf)} districts)',
  **TITLE_KW)
-plt.xticks(rotation=45, ha='right')
-plt.yticks(rotation=0)
-plt.tight_layout(rect=[0, 0.04, 1, 1])
-add_caption(fig, f'Figure 7. Pearson correlation matrix of {len(corr_vars)} HIV, TB, healthcare-access, and socioeconomic determinants across {len(gdf)} Ghanaian districts.')
+ax.tick_params(axis='both', length=0)
+plt.xticks(rotation=38, ha='right', fontsize=7.0)
+plt.yticks(rotation=0, fontsize=7.2)
+plt.tight_layout(rect=[0, 0.06, 1, 1])
 save_transparent_figure(fig, 'Figure_7_correlation.png')
 plt.close()
 
 # ============================================================
-# FIGURE 8 — GWR Local Coefficient Maps
+# FIGURE 8 - GWR Local Coefficient Maps
 # ============================================================
 print('[8/8] Fig 8: GWR coefficients...')
 gwr_vars = [c for c in gdf.columns if c.startswith('GWR_coef_')]
 if len(gwr_vars) >= 4:
- fig, axes = plt.subplots(2, 2, figsize=(8.5, 8.8))
+ fig, axes = plt.subplots(2, 2, figsize=(8.9, 8.6))
  for i, (ax, var) in enumerate(zip(axes.flat, gwr_vars[:4])):
   label = var.replace('GWR_coef_', '')
   label_pretty = LABEL_MAP.get(label, label)
   gdf.plot(column=var, cmap='RdBu_r', legend=True, ax=ax,
   edgecolor='white', linewidth=0.2,
-  legend_kwds={'shrink': 0.6})
-  ax.set_title(f'GWR β: {label_pretty}', **TITLE_KW)
-  add_map_essentials(ax, source_note=MAP_SOURCE_NOTE if i == 0 else None)
- plt.tight_layout(rect=[0, 0.04, 1, 1])
- add_caption(fig, 'Figure 8. GWR local coefficients showing spatial non-stationarity in predictor effects on TB-HIV co-infection prevalence.')
+  legend_kwds={'shrink': 0.50, 'fraction': 0.035, 'pad': 0.02})
+  ax.set_title(f'{chr(65+i)}. GWR coefficient: {label_pretty}', fontsize=9.1,
+   fontweight='bold', color='#000000', pad=7)
+  add_map_essentials(ax, source_note=None)
+ fig.text(0.025, 0.018, 'Ghana LGA post-2018; 261 districts; CRS: UTM Zone 30N',
+  fontsize=6.7, style='italic', color='#444444')
+ plt.tight_layout(rect=[0, 0.045, 1, 1], h_pad=1.7, w_pad=1.2)
  save_transparent_figure(fig, 'Figure_8_gwr_coefficients.png')
  plt.close()
 

@@ -13,7 +13,7 @@
 
 ## 1. Abstract
 
-A nationwide district-level analysis of HIV-TB co-infection in Ghana combining spatial statistics, geographically weighted regression, and ensemble machine learning across all 261 health districts (post-2018 Local Governance Act). Univariate and bivariate Moran's I characterise spatial autocorrelation; LISA and Getis-Ord Gi* delineate hotspots; GWR estimates spatially varying determinants; and a stacked ensemble (Random Forest + XGBoost + LightGBM) with SHAP interpretation yields district-level risk predictions. Analysis reveals moderate spatial clustering of co-infection (global Moran's I = 0.469, p < 0.001), 50 LISA High-High clusters, and a LightGBM AUC of 0.998 under standard 10-fold cross-validation -- which drops to 0.798 +/- 0.250 under leave-one-region-out spatial cross-validation (N=12 regional folds), the more honest estimate of out-of-region generalisation given strong spatial autocorrelation in the predictors.
+A nationwide district-level analysis of HIV-TB co-infection in Ghana combining spatial statistics, geographically weighted regression, and ensemble machine learning across all 261 health districts (post-2018 Local Governance Act). Univariate and bivariate Moran's I characterise spatial autocorrelation; LISA and Getis-Ord Gi* delineate hotspots; GWR estimates spatially varying determinants; and a stacked ensemble (Random Forest + XGBoost + LightGBM) with SHAP interpretation yields district-level risk predictions. Analysis reveals moderate spatial clustering of co-infection (global Moran's I = 0.472, p < 0.001), 50 LISA High-High clusters, and a LightGBM AUC of 0.998 under standard 10-fold cross-validation -- which drops to 0.798 +/- 0.250 under leave-one-region-out spatial cross-validation (N=12 regional folds), the more honest estimate of out-of-region generalisation given strong spatial autocorrelation in the predictors.
 
 ---
 
@@ -61,8 +61,8 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 
 | Metric | Value |
 |--------|-------|
-| Global Moran's I (HIV-TB co-infection) | 0.469 (p < 0.001, 999 permutations) |
-| Bivariate Moran's I (HIV x TB) | 0.526 (p < 0.001) |
+| Global Moran's I (HIV-TB co-infection) | 0.472 (p < 0.001, 999 permutations) |
+| Bivariate Moran's I (HIV x TB) | 0.525 (p < 0.001) |
 | LISA High-High clusters | 50 districts |
 | LISA Low-Low clusters | 41 districts |
 | Bivariate LISA High-High clusters | 48 districts |
@@ -73,7 +73,7 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 | LightGBM spatial (leave-one-region-out) CV AUC | 0.798 +/- 0.250 (N=12 regional folds; the honest generalisation estimate) |
 | GWR global R2 | 0.917 |
 | GWR local R2 (mean) | 0.854 (range 0.509-0.985) |
-| Districts analysed | 261 (Guan District, Oti Region, added 2026-05; shares its parent Krachi East Municipal polygon for spatial weighting -- no distinct legacy boundary exists) |
+| Districts analysed | 261 (Guan District, Oti Region, retained as an administrative unit using the Krachi East shared-polygon approximation because no distinct legacy boundary exists in the available basemap) |
 
 > **Note on the 10-fold vs. spatial-CV gap:** the ~20-point AUC drop and large SD (+/-0.25-0.27) between standard 10-fold CV and leave-one-region-out spatial CV reflects genuine, strong spatial autocorrelation in Ghanaian district-level health data (neighbouring districts have highly correlated HIV/TB rates), not a modelling error. The 10-fold number should not be quoted as the model's ability to generalise to an unseen region; the spatial-CV number is the more defensible generalisation estimate, and its wide SD signals real fold-to-fold instability that any downstream use of this model should account for.
 
@@ -95,7 +95,7 @@ hiv-tb-ml-ghana-261districts/
 |-- dashboard/
 |   `-- HIV_TB_Ghana_Dashboard.html
 |-- poster/
-|   `-- HIV_TB_Ghana_260_Districts_Poster.html
+|   `-- HIV_TB_Ghana_261_Districts_Poster.html
 |-- outputs/
 |   |-- data/                         # Master CSV, GeoJSON, spatial results
 |   |-- figures/                      # Publication figures, transparent 300 DPI PNG
@@ -181,7 +181,7 @@ Both the interactive dashboard and the conference poster are committed as self-c
 | Artefact | View on GitHub | Live preview | Direct download (raw HTML) |
 |----------|---------------|--------------|---------------------------|
 | Interactive dashboard | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/dashboard/HIV_TB_Ghana_Dashboard.html) |
-| Conference poster | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) |
+| Conference poster | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_261_Districts_Poster.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_261_Districts_Poster.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/poster/HIV_TB_Ghana_261_Districts_Poster.html) |
 
 > **Tip:** The dashboard works fully offline once downloaded. The poster is print-ready at A0 (841 x 1189 mm).
 

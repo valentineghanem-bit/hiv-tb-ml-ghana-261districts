@@ -39,7 +39,7 @@ MAP_VARS = {
 REGIONS = sorted(df['REGION'].unique().tolist())
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
- title='HIV-TB Ghana · 260 Districts')
+ title='HIV-TB Ghana · 261 Districts')
 
 def kpi_card(value, label, color='danger'):
  return dbc.Card(
@@ -52,7 +52,7 @@ def kpi_card(value, label, color='danger'):
 
 app.layout = dbc.Container([
  html.Div([
- html.H1('HIV-TB Co-infection Dashboard — Ghana 260 Districts',
+ html.H1('HIV-TB Co-infection Dashboard — Ghana 261 Districts',
  className='mt-3 mb-1'),
  html.P('Valentine Golden Ghanem · Biomedical Scientist · April 2026',
  className='text-muted font-italic'),
@@ -69,7 +69,7 @@ app.layout = dbc.Container([
  dbc.Col(kpi_card(int((df['BvLISA_cluster'] == 'High-High').sum()),
  'Bivariate HH'), width=2),
  dbc.Col(kpi_card('0.998', 'Best ML CV AUC'), width=2),
- dbc.Col(kpi_card('0.521', "Bivariate Moran's I"), width=2),
+ dbc.Col(kpi_card('0.525', "Bivariate Moran's I"), width=2),
  ], className='mb-3'),
 
  # Controls
