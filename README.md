@@ -83,28 +83,31 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 
 ```
 hiv-tb-ml-ghana-261districts/
-â”œâ”€â”€ analysis/
-â”‚   â”œâ”€â”€ build_master_dataset.py     # Data integration pipeline
-â”‚   â”œâ”€â”€ spatial_analysis.py         # Moran's I, LISA, GWR, SEM
-â”‚   â”œâ”€â”€ ml_pipeline.py              # RF, XGBoost, LightGBM, Stacked, SHAP
-â”‚   â””â”€â”€ generate_figures.py         # 300 DPI publication figures
-â”œâ”€â”€ scripts/
-â”‚   â”œâ”€â”€ deduplicate_master_dataset.py  # 260â†’261 migration audit trail
-â”‚   â”œâ”€â”€ spatial_utils.py            # Reusable spatial analysis utilities
-â”‚   â””â”€â”€ spatial_diagnostics.R       # R: spatial autocorrelation diagnostics
-â”œâ”€â”€ app.py                          # Plotly Dash interactive application
-â”œâ”€â”€ analysis.R                      # R: spatial regression + GWR diagnostics
-â”œâ”€â”€ dashboard/
-â”‚   â””â”€â”€ HIV_TB_Ghana_Dashboard.html
-â”œâ”€â”€ poster/
-â”‚   â””â”€â”€ HIV_TB_Ghana_260_Districts_Poster.html
-â”œâ”€â”€ outputs/
-â”‚   â”œâ”€â”€ data/                       # Master CSV + result tables
-â”‚   â””â”€â”€ figures/                    # Publication figures (300 DPI)
-â”œâ”€â”€ tests/
-â”œâ”€â”€ requirements.txt
-â”œâ”€â”€ Dockerfile
-â””â”€â”€ CITATION.cff
+|-- analysis/
+|   |-- build_master_dataset.py       # Data integration pipeline
+|   |-- spatial_analysis.py           # Moran's I, LISA, GWR, SEM
+|   |-- ml_pipeline.py                # RF, XGBoost, LightGBM, stacked model, SHAP
+|   `-- generate_figures.py           # Transparent 300 DPI publication figures
+|-- scripts/
+|   |-- build_hiei_visuals.py         # Bespoke HI-EI dashboard/poster generator wrapper
+|   |-- build_submission_package.py   # Local DOCX submission package builder
+|   `-- run_submission_sensitivity.py # Reviewer-facing robustness checks
+|-- dashboard/
+|   `-- HIV_TB_Ghana_Dashboard.html
+|-- poster/
+|   `-- HIV_TB_Ghana_260_Districts_Poster.html
+|-- outputs/
+|   |-- data/                         # Master CSV, GeoJSON, spatial results
+|   |-- figures/                      # Publication figures, transparent 300 DPI PNG
+|   |-- models/                       # Trained model artefacts and SHAP arrays
+|   `-- tables/                       # Moran's I, GWR, ML and sensitivity tables
+|-- tests/
+|   `-- test_hiv_tb.py
+|-- app.py                            # Plotly Dash interactive application
+|-- analysis.R                        # R spatial regression and GWR diagnostics
+|-- requirements.txt
+|-- CITATION.cff
+`-- README.md
 ```
 
 ---
