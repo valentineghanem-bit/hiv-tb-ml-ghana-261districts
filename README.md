@@ -1,6 +1,6 @@
 # Spatial Distribution, Determinants, and Machine Learning-Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts
 
-[![CI](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions/workflows/ci.yml/badge.svg)](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![R 4.3+](https://img.shields.io/badge/R-4.3+-blue.svg)](https://www.r-project.org/) [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--8332--0220-green.svg)](https://orcid.org/0009-0002-8332-0220)
+[![CI](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions/workflows/ci.yml/badge.svg)](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21351614.svg)](https://doi.org/10.5281/zenodo.21351614) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![R 4.3+](https://img.shields.io/badge/R-4.3+-blue.svg)](https://www.r-project.org/) [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--8332--0220-green.svg)](https://orcid.org/0009-0002-8332-0220)
 
 **Author:** Valentine Golden Ghanem | Ghana COCOBOD Cocoa Clinic, Accra, Ghana
 **ORCID:** [0009-0002-8332-0220](https://orcid.org/0009-0002-8332-0220)
@@ -8,6 +8,8 @@
 **Reporting standard:** STROBE
 **Date:** May 2026
 **Status:** Manuscript in preparation
+**Release DOI:** [10.5281/zenodo.21351614](https://doi.org/10.5281/zenodo.21351614)
+**Concept DOI:** [10.5281/zenodo.21351613](https://doi.org/10.5281/zenodo.21351613)
 
 ---
 
@@ -202,7 +204,7 @@ This study analyses publicly released aggregate data from the Ghana Demographic 
 ## 11. Citation
 
 **APA:**
-Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learning-Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts.* GitHub. https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts
+Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learning-Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts* (v1.2.0) [Data and code]. Zenodo. https://doi.org/10.5281/zenodo.21351614
 
 **BibTeX:**
 ```bibtex
@@ -210,11 +212,13 @@ Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learning-
   author = {Ghanem, Valentine Golden},
   title  = {Spatial Distribution, Determinants, and Machine Learning--Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts},
   year   = {2026},
-  url    = {https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts}
+  version = {1.2.0},
+  doi    = {10.5281/zenodo.21351614},
+  url    = {https://doi.org/10.5281/zenodo.21351614}
 }
 ```
 
-A machine-readable citation is provided in `CITATION.cff`.
+A machine-readable citation is provided in `CITATION.cff`. The GitHub repository remains available at <https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts>.
 
 ---
 

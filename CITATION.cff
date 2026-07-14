@@ -13,7 +13,7 @@ abstract: >
   convention). Canonical statistics (seed=42, 261 districts, recomputed
   2026-07-14): global Moran's I=0.472 (HIV-TB co-infection), bivariate
   Moran's I=0.525 (HIV x TB); 50 LISA High-High clusters, 48 bivariate
-  High-High clusters; GWR R²=0.917; LightGBM 10-fold CV AUC=0.998 (non-spatial,
+  High-High clusters; GWR R^2=0.917; LightGBM 10-fold CV AUC=0.998 (non-spatial,
   IID folds). Spatial generalisation (leave-one-region-out CV, N=12 regional
   folds) is materially lower and unstable: LightGBM AUC=0.798 +/- 0.250 -- the
   large drop and SD reflect genuine spatial autocorrelation in district-level
@@ -26,9 +26,10 @@ authors:
     affiliation: "Ghana COCOBOD Cocoa Clinic, Accra, Ghana"
     email: valentineghanem@gmail.com
 version: "1.2.0"
-date-released: "2026-07-12"
+date-released: "2026-07-14"
 license: MIT
 repository-code: "https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts"
+doi: "10.5281/zenodo.21351614"
 keywords:
   - HIV-TB co-infection
   - spatial epidemiology
