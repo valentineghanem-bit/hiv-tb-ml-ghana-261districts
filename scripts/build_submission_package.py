@@ -82,7 +82,7 @@ def format_table(table) -> None:
                 paragraph.paragraph_format.line_spacing = 1.05
                 for run in paragraph.runs:
                     run.font.name = "Times New Roman"
-                    run.font.size = Pt(8.5)
+                    run.font.size = Pt(10 if row_idx == 0 else 9.5)
                     if row_idx == 0:
                         run.bold = True
 
@@ -180,21 +180,57 @@ def add_results_tables(doc: Document) -> None:
 
 def add_figures(doc: Document) -> None:
     figures = [
-        ("Figure 1. Disease burden choropleths.", "Figure_1_disease_burden.png"),
-        ("Figure 2. Ranked global Moran's I summary for tested indicators.", "Figure_3_morans_I.png"),
-        ("Figure 3. LISA, bivariate LISA and Getis-Ord Gi* clusters.", "Figure_2_spatial_clusters.png"),
-        ("Figure 4. GWR local coefficient maps.", "Figure_8_gwr_coefficients.png"),
-        ("Figure 5. Model validation comparison: random 10-fold versus leave-one-region-out spatial CV.", "Figure_4_ml_performance.png"),
-        ("Figure 6. SHAP feature importance.", "Figure_5_shap_importance.png"),
-        ("Figure 6b. SHAP beeswarm.", "Figure_5b_shap_beeswarm.png"),
-        ("Figure 7. Stacked-ensemble risk map.", "Figure_6_ml_risk_map.png"),
-        ("Figure 8. Selected determinant correlation matrix.", "Figure_7_correlation.png"),
+        (
+            "Figure 1. District burden maps. Choropleths show HIV prevalence, TB incidence, TB-HIV co-infection and ART coverage across 261 Ghanaian districts; darker shading indicates higher values within each panel.",
+            "Figure_1_disease_burden.png",
+            "Source: Author analysis of Ghana Statistical Service district geometry, WHO/GHO indicators, DHS-derived inputs and outputs/data/ghana_261_final_results.geojson.",
+        ),
+        (
+            "Figure 2. Global spatial autocorrelation. Ranked Moran's I estimates for eleven district-level indicators using KNN-5 spatial weights and 999 permutations; labels report Moran's I and permutation p-values.",
+            "Figure_3_morans_I.png",
+            "Source: Author analysis of outputs/tables/global_morans_I.csv.",
+        ),
+        (
+            "Figure 3. Local spatial clusters. LISA, bivariate LISA (HIV prevalence x TB incidence), Getis-Ord Gi* hotspots and GWR local R^2 are mapped across 261 districts; cluster legends report district counts where applicable.",
+            "Figure_2_spatial_clusters.png",
+            "Source: Author analysis of outputs/data/ghana_261_final_results.geojson and outputs/tables/bivariate_morans_I.csv.",
+        ),
+        (
+            "Figure 4. Spatially varying GWR coefficients. Local GWR coefficient surfaces are shown for the leading predictors across 261 districts; colour scales are panel-specific and indicate lower-to-higher local coefficient values.",
+            "Figure_8_gwr_coefficients.png",
+            "Source: Author analysis of outputs/tables/gwr_summary.csv and outputs/data/ghana_261_final_results.geojson.",
+        ),
+        (
+            "Figure 5. Random versus spatial validation. Mean AUC-ROC is shown for random 10-fold cross-validation and leave-one-region-out spatial cross-validation; orange whiskers show spatial-CV +/- SD.",
+            "Figure_4_ml_performance.png",
+            "Source: Author analysis of outputs/tables/ml_10fold_cv_results.csv and outputs/tables/ml_spatial_cv_results.csv.",
+        ),
+        (
+            "Figure 6. SHAP feature importance. Mean absolute SHAP values are shown for the LightGBM hotspot model; larger values indicate greater average contribution to predicted hotspot status.",
+            "Figure_5_shap_importance.png",
+            "Source: Author analysis of outputs/tables/shap_feature_importance.csv and saved LightGBM SHAP arrays.",
+        ),
+        (
+            "Figure 6b. SHAP value distribution. The beeswarm plot shows predictor-specific SHAP distributions for the LightGBM hotspot model, with points representing held-out district observations.",
+            "Figure_5b_shap_beeswarm.png",
+            "Source: Author analysis of saved LightGBM SHAP arrays in outputs/models/.",
+        ),
+        (
+            "Figure 7. Stacked-ensemble risk map. District-level ensemble hotspot probability is mapped alongside the twenty highest-risk districts; higher scores indicate greater predicted probability of High-High co-infection cluster membership.",
+            "Figure_6_ml_risk_map.png",
+            "Source: Author analysis of outputs/models/predictions.json and outputs/data/ghana_261_final_results.geojson.",
+        ),
+        (
+            "Figure 8. Selected determinant correlations. Pearson correlation coefficients are shown for twelve HIV, TB, socioeconomic and health-system indicators across 261 districts; every cell reports the corresponding r value.",
+            "Figure_7_correlation.png",
+            "Source: Author analysis of outputs/data/ghana_261_final_results.geojson.",
+        ),
     ]
-    for caption, file_name in figures:
-        doc.add_paragraph(caption, style="Caption")
+    for caption, file_name, source in figures:
         path = ROOT / "outputs" / "figures" / file_name
         if path.exists():
             doc.add_picture(str(path), width=Inches(6.4))
+        doc.add_paragraph(f"{caption} {source}", style="Caption")
         doc.add_paragraph()
 
 
@@ -208,11 +244,19 @@ def md_to_docx(text: str) -> None:
     styles["Normal"].font.size = Pt(12)
     styles["Normal"].paragraph_format.line_spacing_rule = WD_LINE_SPACING.DOUBLE
     styles["Normal"].paragraph_format.space_after = Pt(0)
+    styles["Caption"].font.name = "Times New Roman"
+    styles["Caption"].font.size = Pt(10)
+    styles["Caption"].font.italic = True
+    styles["Caption"].paragraph_format.line_spacing = 1.0
+    styles["Caption"].paragraph_format.space_after = Pt(4)
 
     in_table_placeholder = False
+    in_figure_placeholder = False
     for raw in text.splitlines():
         line = raw.strip()
         if not line or line == "---":
+            continue
+        if in_figure_placeholder:
             continue
         if line.startswith("## Tables"):
             doc.add_heading("Tables", level=1)
@@ -223,6 +267,7 @@ def md_to_docx(text: str) -> None:
             doc.add_heading("Figures", level=1)
             add_figures(doc)
             in_table_placeholder = False
+            in_figure_placeholder = True
             continue
         if in_table_placeholder:
             continue

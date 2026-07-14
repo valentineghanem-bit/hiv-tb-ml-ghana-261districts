@@ -142,17 +142,17 @@ print(f'Loaded: {len(gdf)} districts')
 print('[1/8] Fig 1: Disease burden choropleths...')
 fig, axes = plt.subplots(2, 2, figsize=(9.2, 9.0))
 panels = [
- ('HIV_Prev_Total_pct', 'A. HIV Prevalence (%)', 'OrRd'),
- ('TB_Incidence_per100k', 'B. TB Incidence (per 100,000)', 'YlOrBr'),
- ('TB_HIV_CoInfection_pct', 'C. TB-HIV Co-infection (%)', 'Reds'),
- ('ART_Coverage_pct', 'D. ART Coverage (%)', 'BuGn'),
+ ('HIV_Prev_Total_pct', 'A. HIV Prevalence (%)', 'OrRd', 'Prevalence (%)'),
+ ('TB_Incidence_per100k', 'B. TB Incidence (per 100,000)', 'YlOrBr', 'Incidence per 100,000'),
+ ('TB_HIV_CoInfection_pct', 'C. TB-HIV Co-infection (%)', 'Reds', 'Co-infection (%)'),
+ ('ART_Coverage_pct', 'D. ART Coverage (%)', 'BuGn', 'Coverage (%)'),
 ]
-for i, (ax, (var, title, cmap)) in enumerate(zip(axes.flat, panels)):
+for i, (ax, (var, title, cmap, legend_label)) in enumerate(zip(axes.flat, panels)):
  gdf.plot(column=var, cmap=cmap, legend=True, ax=ax, edgecolor='white',
- linewidth=0.3, legend_kwds={'shrink': 0.6})
+ linewidth=0.3, legend_kwds={'shrink': 0.6, 'label': legend_label})
  ax.set_title(title, **TITLE_KW)
- add_map_essentials(ax, source_note=MAP_SOURCE_NOTE if i == 0 else None)
-plt.tight_layout(rect=[0, 0.04, 1, 1])
+ add_map_essentials(ax, source_note=None)
+plt.tight_layout(rect=[0, 0.045, 1, 1])
 # Caption intentionally not baked into the image: the manuscript build script
 # (build_manuscript.js) supplies the numbered caption as editable docx text,
 # per journal convention. Baking a second, differently-worded caption into the
@@ -223,7 +223,7 @@ add_map_essentials(ax)
 ax = axes[1, 1]
 if 'GWR_local_R2' in gdf.columns:
  gdf.plot(column='GWR_local_R2', cmap='viridis', legend=True, ax=ax,
- edgecolor='white', linewidth=0.2, legend_kwds={'shrink': 0.6})
+ edgecolor='white', linewidth=0.2, legend_kwds={'shrink': 0.6, 'label': 'Local R^2'})
  ax.set_title('D. GWR local R^2', **TITLE_KW)
  add_map_essentials(ax)
 else:
@@ -386,7 +386,7 @@ gdf.plot(column='Ensemble_Risk_Score', cmap='RdYlGn_r', legend=True, ax=ax,
  edgecolor='white', linewidth=0.3,
  legend_kwds={'label': 'Hotspot Probability', 'shrink': 0.6})
 ax.set_title('A. Ensemble-Predicted Hotspot Risk', **TITLE_KW)
-add_map_essentials(ax, source_note=MAP_SOURCE_NOTE)
+add_map_essentials(ax, source_note=None)
 
 ax = axes[1]
 # Top 20 high-risk districts. Scores are tightly clustered, so a lollipop plot
@@ -470,12 +470,11 @@ if len(gwr_vars) >= 4:
   label_pretty = LABEL_MAP.get(label, label)
   gdf.plot(column=var, cmap='RdBu_r', legend=True, ax=ax,
   edgecolor='white', linewidth=0.2,
-  legend_kwds={'shrink': 0.50, 'fraction': 0.035, 'pad': 0.02})
+  legend_kwds={'shrink': 0.50, 'fraction': 0.035, 'pad': 0.02,
+   'label': 'Local coefficient'})
   ax.set_title(f'{chr(65+i)}. GWR coefficient: {label_pretty}', fontsize=9.1,
    fontweight='bold', color='#000000', pad=7)
   add_map_essentials(ax, source_note=None)
- fig.text(0.025, 0.018, 'Ghana LGA post-2018; 261 districts; CRS: UTM Zone 30N',
-  fontsize=6.7, style='italic', color='#444444')
  plt.tight_layout(rect=[0, 0.045, 1, 1], h_pad=1.7, w_pad=1.2)
  save_transparent_figure(fig, 'Figure_8_gwr_coefficients.png')
  plt.close()
