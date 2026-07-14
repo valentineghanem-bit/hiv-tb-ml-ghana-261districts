@@ -1,4 +1,4 @@
-﻿# Spatial Distribution, Determinants, and Machine Learningâ€“Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts
+# Spatial Distribution, Determinants, and Machine Learning-Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts
 
 [![CI](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions/workflows/ci.yml/badge.svg)](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![R 4.3+](https://img.shields.io/badge/R-4.3+-blue.svg)](https://www.r-project.org/) [![ORCID](https://img.shields.io/badge/ORCID-0009--0002--8332--0220-green.svg)](https://orcid.org/0009-0002-8332-0220)
 
@@ -36,7 +36,7 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 | Geographically Weighted Regression | mgwr | Spatially varying coefficient estimation |
 | Random Forest | scikit-learn | Ensemble risk prediction |
 | XGBoost | xgboost | Gradient boosted risk prediction |
-| LightGBM | lightgbm | Best 10-fold CV performer (AUC 0.998); spatial CV AUC 0.798 Â± 0.250 |
+| LightGBM | lightgbm | Best 10-fold CV performer (AUC 0.998); spatial CV AUC 0.798 +/- 0.250 |
 | Stacked ensemble | scikit-learn | Meta-learner combining RF + XGB + LGBM |
 | SMOTE | imbalanced-learn | Class imbalance correction |
 | SHAP | shap | TreeExplainer interpretability |
@@ -49,7 +49,7 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 | Source | Variables | Year | Access |
 |--------|-----------|------|--------|
 | Ghana DHS 2003 | Regional HIV prevalence, behaviour, VCT, attitudes | 2003 | [dhsprogram.com](https://dhsprogram.com) (registration) |
-| WHO Global Health Observatory | National HIV, TB, workforce, financing indicators | 2001â€“2024 | [who.int/data/gho](https://www.who.int/data/gho) (open) |
+| WHO Global Health Observatory / Global TB Programme | National HIV, TB, workforce, financing indicators | 2013-2024 | [who.int/data/gho](https://www.who.int/data/gho) (open) |
 | Ghana Statistical Service 2021 Census | District socioeconomic variables | 2021 | [statsghana.gov.gh](https://statsghana.gov.gh) |
 | Ghana 260-feature district GeoJSON + Guan convention | District boundary polygons for 261 administrative districts; Guan retained as an administrative unit using the Krachi East shared-polygon approximation | 2021/2018 frame | Ghana Statistical Service / Local Governance (Amendment) instruments |
 
@@ -62,20 +62,20 @@ A nationwide district-level analysis of HIV-TB co-infection in Ghana combining s
 | Metric | Value |
 |--------|-------|
 | Global Moran's I (HIV-TB co-infection) | 0.469 (p < 0.001, 999 permutations) |
-| Bivariate Moran's I (HIV Ã— TB) | 0.526 (p < 0.001) |
+| Bivariate Moran's I (HIV x TB) | 0.526 (p < 0.001) |
 | LISA High-High clusters | 50 districts |
 | LISA Low-Low clusters | 41 districts |
 | Bivariate LISA High-High clusters | 48 districts |
 | Gi* hotspots | 1 district at 95%, 11 at 90% (none at 99%/99.9%) |
-| RandomForest 10-fold CV AUC | 0.996 Â± 0.004 (non-spatial, IID folds) |
-| RandomForest spatial (leave-one-region-out) CV AUC | 0.763 Â± 0.265 (N=12 regional folds) |
-| LightGBM 10-fold CV AUC | 0.998 Â± 0.004 (non-spatial, IID folds; best 10-fold performer) |
-| LightGBM spatial (leave-one-region-out) CV AUC | 0.798 Â± 0.250 (N=12 regional folds; the honest generalisation estimate) |
-| GWR global R² | 0.917 |
-| GWR local R² (mean) | 0.854 (range 0.509-0.985) |
+| RandomForest 10-fold CV AUC | 0.996 +/- 0.004 (non-spatial, IID folds) |
+| RandomForest spatial (leave-one-region-out) CV AUC | 0.763 +/- 0.265 (N=12 regional folds) |
+| LightGBM 10-fold CV AUC | 0.998 +/- 0.004 (non-spatial, IID folds; best 10-fold performer) |
+| LightGBM spatial (leave-one-region-out) CV AUC | 0.798 +/- 0.250 (N=12 regional folds; the honest generalisation estimate) |
+| GWR global R2 | 0.917 |
+| GWR local R2 (mean) | 0.854 (range 0.509-0.985) |
 | Districts analysed | 261 (Guan District, Oti Region, added 2026-05; shares its parent Krachi East Municipal polygon for spatial weighting -- no distinct legacy boundary exists) |
 
-> **Note on the 10-fold vs. spatial-CV gap:** the ~20-point AUC drop and large SD (Â±0.25â€“0.27) between standard 10-fold CV and leave-one-region-out spatial CV reflects genuine, strong spatial autocorrelation in Ghanaian district-level health data (neighbouring districts have highly correlated HIV/TB rates), not a modelling error. The 10-fold number should not be quoted as the model's ability to generalise to an unseen region; the spatial-CV number is the more defensible generalisation estimate, and its wide SD signals real fold-to-fold instability that any downstream use of this model should account for.
+> **Note on the 10-fold vs. spatial-CV gap:** the ~20-point AUC drop and large SD (+/-0.25-0.27) between standard 10-fold CV and leave-one-region-out spatial CV reflects genuine, strong spatial autocorrelation in Ghanaian district-level health data (neighbouring districts have highly correlated HIV/TB rates), not a modelling error. The 10-fold number should not be quoted as the model's ability to generalise to an unseen region; the spatial-CV number is the more defensible generalisation estimate, and its wide SD signals real fold-to-fold instability that any downstream use of this model should account for.
 
 ---
 
@@ -119,7 +119,7 @@ hiv-tb-ml-ghana-261districts/
 - Python 3.12 (pinned in `requirements.txt`)
 - R 4.3+ with packages: GWmodel, spdep, spatialreg, dplyr (see `analysis.R` header)
 - Random seed: 42 throughout
-- Estimated runtime: ~10â€“15 minutes on a standard laptop (GWR is compute-intensive)
+- Estimated runtime: ~10-15 minutes on a standard laptop (GWR is compute-intensive)
 - Tested on: Ubuntu 22.04 / macOS 14 / Windows 11 (CI: GitHub Actions)
 
 ### 7.2 Clone & install
@@ -176,14 +176,14 @@ xdg-open dashboard/HIV_TB_Ghana_Dashboard.html
 
 ## 8a. Downloadable Artefacts (HTML)
 
-Both the interactive dashboard and the conference poster are committed as self-contained HTML files â€” no server, no build step required.
+Both the interactive dashboard and the conference poster are committed as self-contained HTML files - no server, no build step required.
 
 | Artefact | View on GitHub | Live preview | Direct download (raw HTML) |
 |----------|---------------|--------------|---------------------------|
 | Interactive dashboard | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/dashboard/HIV_TB_Ghana_Dashboard.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/dashboard/HIV_TB_Ghana_Dashboard.html) |
 | Conference poster | [View](https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Preview](https://htmlpreview.github.io/?https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/blob/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) | [Download](https://raw.githubusercontent.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts/main/poster/HIV_TB_Ghana_260_Districts_Poster.html) |
 
-> **Tip:** The dashboard works fully offline once downloaded. The poster is print-ready at A0 (841 Ã— 1189 mm).
+> **Tip:** The dashboard works fully offline once downloaded. The poster is print-ready at A0 (841 x 1189 mm).
 
 ---
 
@@ -202,7 +202,7 @@ This study analyses publicly released aggregate data from the Ghana Demographic 
 ## 11. Citation
 
 **APA:**
-Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learningâ€“Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts.* GitHub. https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts
+Ghanem, V. G. (2026). *Spatial Distribution, Determinants, and Machine Learning-Based Risk Prediction of HIV-TB Co-infection Across Ghana's 261 Districts.* GitHub. https://github.com/valentineghanem-bit/hiv-tb-ml-ghana-261districts
 
 **BibTeX:**
 ```bibtex
@@ -220,7 +220,7 @@ A machine-readable citation is provided in `CITATION.cff`.
 
 ## 12. License
 
-Code is released under the **MIT License** â€” see [LICENSE](LICENSE) for details.
+Code is released under the **MIT License** - see [LICENSE](LICENSE) for details.
 Outputs and figures: **CC BY 4.0**.
 
 ---
