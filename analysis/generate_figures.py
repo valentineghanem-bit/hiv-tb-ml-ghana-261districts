@@ -9,6 +9,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from matplotlib.colors import ListedColormap, LinearSegmentedColormap
+from matplotlib.lines import Line2D
 from matplotlib_scalebar.scalebar import ScaleBar
 import seaborn as sns
 from pathlib import Path
@@ -408,15 +409,24 @@ for i, (_, row) in enumerate(top20.iterrows()):
 for i, (_, row) in enumerate(top20.iterrows()):
  ax.text(row['Ensemble_Risk_Score'] + 0.005,
  i,
- f" {row['Ensemble_Risk_Score']:.3f} ({row['REGION']})",
+ f" {row['Ensemble_Risk_Score']:.3f}",
  va='center', fontsize=7.7, color='#333333')
 ax.set_yticks(y_pos)
 ax.set_yticklabels(top20['District'], fontsize=8.2)
 ax.invert_yaxis()
 ax.set_xlabel('Ensemble Hotspot Probability', fontsize=10, fontweight='semibold')
 ax.set_title('B. Top 20 High-Risk Districts', **TITLE_KW)
-ax.set_xlim(x_min, min(1.01, top20['Ensemble_Risk_Score'].max() + 0.045))
+ax.set_xlim(x_min, min(1.01, top20['Ensemble_Risk_Score'].max() + 0.026))
 ax.grid(axis='x', color='#d9d9d9', linewidth=0.6)
+legend_handles = [
+ Line2D([0], [0], marker='o', color='none', label=region.title(),
+ markerfacecolor=color, markeredgecolor='black', markeredgewidth=0.35, markersize=5.5)
+ for region, color in region_colors.items()
+ if region in set(top20['REGION'].astype(str).str.upper())
+]
+if legend_handles:
+ ax.legend(handles=legend_handles, title='Point colour: region', loc='lower right',
+ frameon=False, fontsize=6.8, title_fontsize=7.2, borderaxespad=0.2)
 
 plt.tight_layout(rect=[0, 0.04, 1, 1])
 save_transparent_figure(fig, 'Figure_6_ml_risk_map.png')

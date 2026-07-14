@@ -181,47 +181,47 @@ def add_results_tables(doc: Document) -> None:
 def add_figures(doc: Document) -> None:
     figures = [
         (
-            "Figure 1. District burden maps. Choropleths show HIV prevalence, TB incidence, TB-HIV co-infection and ART coverage across 261 Ghanaian districts; darker shading indicates higher values within each panel.",
+            "Figure 1. District burden maps. Panels show (A) HIV prevalence, (B) TB incidence, (C) TB-HIV co-infection and (D) ART coverage across 261 Ghanaian districts. Each subfigure has its own labelled colourbar; darker shading indicates higher values within that panel.",
             "Figure_1_disease_burden.png",
             "Source: Author analysis of Ghana Statistical Service district geometry, WHO/GHO indicators, DHS-derived inputs and outputs/data/ghana_261_final_results.geojson.",
         ),
         (
-            "Figure 2. Global spatial autocorrelation. Ranked Moran's I estimates for eleven district-level indicators using KNN-5 spatial weights and 999 permutations; labels report Moran's I and permutation p-values.",
+            "Figure 2. Global spatial autocorrelation. Ranked Moran's I estimates for eleven district-level indicators using KNN-5 spatial weights and 999 permutations; each marker label reports Moran's I and the permutation p-value.",
             "Figure_3_morans_I.png",
             "Source: Author analysis of outputs/tables/global_morans_I.csv.",
         ),
         (
-            "Figure 3. Local spatial clusters. LISA, bivariate LISA (HIV prevalence x TB incidence), Getis-Ord Gi* hotspots and GWR local R^2 are mapped across 261 districts; cluster legends report district counts where applicable.",
+            "Figure 3. Local spatial clusters. Panels show (A) univariate LISA for TB-HIV co-infection, (B) bivariate LISA for HIV prevalence x TB incidence, (C) Getis-Ord Gi* hotspots and (D) GWR local R^2. Panels A-C use class legends with district counts; panel D uses a labelled colourbar.",
             "Figure_2_spatial_clusters.png",
             "Source: Author analysis of outputs/data/ghana_261_final_results.geojson and outputs/tables/bivariate_morans_I.csv.",
         ),
         (
-            "Figure 4. Spatially varying GWR coefficients. Local GWR coefficient surfaces are shown for the leading predictors across 261 districts; colour scales are panel-specific and indicate lower-to-higher local coefficient values.",
+            "Figure 4. Spatially varying GWR coefficients. Panels show local coefficient surfaces for (A) HIV prevalence, (B) poverty intensity, (C) uninsurance and (D) doctors per 10,000 population. Each subfigure uses a labelled local-coefficient colourbar.",
             "Figure_8_gwr_coefficients.png",
             "Source: Author analysis of outputs/tables/gwr_summary.csv and outputs/data/ghana_261_final_results.geojson.",
         ),
         (
-            "Figure 5. Random versus spatial validation. Mean AUC-ROC is shown for random 10-fold cross-validation and leave-one-region-out spatial cross-validation; orange whiskers show spatial-CV +/- SD.",
+            "Figure 5. Random versus spatial validation. Blue markers show random 10-fold cross-validation mean AUC-ROC; orange markers show leave-one-region-out spatial cross-validation mean AUC-ROC, with orange whiskers showing spatial-CV +/- SD.",
             "Figure_4_ml_performance.png",
             "Source: Author analysis of outputs/tables/ml_10fold_cv_results.csv and outputs/tables/ml_spatial_cv_results.csv.",
         ),
         (
-            "Figure 6. SHAP feature importance. Mean absolute SHAP values are shown for the LightGBM hotspot model; larger values indicate greater average contribution to predicted hotspot status.",
+            "Figure 6. SHAP feature importance. The lollipop chart ranks LightGBM predictors by mean absolute SHAP value; larger values indicate greater average contribution to predicted hotspot status.",
             "Figure_5_shap_importance.png",
             "Source: Author analysis of outputs/tables/shap_feature_importance.csv and saved LightGBM SHAP arrays.",
         ),
         (
-            "Figure 6b. SHAP value distribution. The beeswarm plot shows predictor-specific SHAP distributions for the LightGBM hotspot model, with points representing held-out district observations.",
+            "Figure 6b. SHAP value distribution. The beeswarm plot shows predictor-specific SHAP distributions for the LightGBM hotspot model; each point is a held-out district observation and the colour legend marks low-to-high feature values.",
             "Figure_5b_shap_beeswarm.png",
             "Source: Author analysis of saved LightGBM SHAP arrays in outputs/models/.",
         ),
         (
-            "Figure 7. Stacked-ensemble risk map. District-level ensemble hotspot probability is mapped alongside the twenty highest-risk districts; higher scores indicate greater predicted probability of High-High co-infection cluster membership.",
+            "Figure 7. Stacked-ensemble risk map. Panel A maps district-level ensemble hotspot probability using a labelled probability colourbar. Panel B ranks the twenty highest-risk districts; the point-colour legend identifies region and printed labels report each probability.",
             "Figure_6_ml_risk_map.png",
             "Source: Author analysis of outputs/models/predictions.json and outputs/data/ghana_261_final_results.geojson.",
         ),
         (
-            "Figure 8. Selected determinant correlations. Pearson correlation coefficients are shown for twelve HIV, TB, socioeconomic and health-system indicators across 261 districts; every cell reports the corresponding r value.",
+            "Figure 8. Selected determinant correlations. The heat map shows Pearson correlation coefficients for twelve HIV, TB, socioeconomic and health-system indicators across 261 districts; the colourbar gives Pearson r and every cell reports the corresponding r value.",
             "Figure_7_correlation.png",
             "Source: Author analysis of outputs/data/ghana_261_final_results.geojson.",
         ),
